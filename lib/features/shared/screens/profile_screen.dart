@@ -100,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final form = FormData.fromMap({
         'photo': await MultipartFile.fromFile(img.path, filename: img.name),
       });
-      final res = await ApiService.postForm('/profile/me/photo', data: form);
+      final res = await ApiService.postMultipart('/profile/me/photo', form);
       setState(() { _profile = res.data as Map<String, dynamic>; });
     } catch (_) {
       if (mounted) {
@@ -304,7 +304,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             Switch(
                               value: isDark,
                               onChanged: (_) => ref.read(themeProvider.notifier).toggle(),
-                              activeColor: AppColors.neonPurple,
+                              activeThumbColor: AppColors.neonPurple,
                               inactiveThumbColor: AppColors.neonGold,
                             ),
                           ],
@@ -317,7 +317,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       GlassCard(
                         padding: EdgeInsets.zero,
                         child: ListTile(
-                          textDirection: TextDirection.rtl,
                           leading: const Icon(Icons.logout,
                               color: AppColors.neonRed),
                           title: Text('تسجيل الخروج',
@@ -335,7 +334,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _divider(palette) => Divider(color: palette.border, height: 24);
+  Widget _divider(Palette palette) => Divider(color: palette.border, height: 24);
 
   Widget _infoRow(IconData icon, String label, String value) {
     final c = context.colors;
