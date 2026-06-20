@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 import '../theme/app_text.dart';
 
 class KpiCard extends StatelessWidget {
@@ -24,14 +23,14 @@ class KpiCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
           colors: [
-            gradient.colors.first.withOpacity(0.15),
-            gradient.colors.last.withOpacity(0.05),
+            gradient.colors.first.withValues(alpha: 0.15),
+            gradient.colors.last.withValues(alpha: 0.05),
           ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
         border: Border.all(
-          color: gradient.colors.first.withOpacity(0.3),
+          color: gradient.colors.first.withValues(alpha: 0.3),
         ),
       ),
       child: Column(

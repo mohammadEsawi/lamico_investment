@@ -32,10 +32,10 @@ class _AccessRequestScreenState extends State<AccessRequestScreen> {
     if (_nameCtrl.text.isEmpty || _emailCtrl.text.isEmpty) return;
     setState(() => _loading = true);
     try {
-      await ApiService.post('/registration-request/', data: {
-        'name': _nameCtrl.text.trim(),
+      await ApiService.post('/registration-requests', data: {
+        'fullName': _nameCtrl.text.trim(),
         'email': _emailCtrl.text.trim(),
-        'notes': _noteCtrl.text.trim(),
+        'message': _noteCtrl.text.trim(),
       });
       setState(() => _sent = true);
     } catch (_) {

@@ -46,21 +46,23 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 110, height: 110,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(colors: [
-                    AppColors.neonPurple.withValues(alpha: 0.3),
-                    Colors.transparent,
-                  ]),
+              Stack(alignment: Alignment.center, children: [
+                Container(
+                  width: 130, height: 130,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [
+                      AppColors.neonPurple.withValues(alpha: 0.3),
+                      Colors.transparent,
+                    ]),
+                  ),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Icon(Icons.show_chart,
-                      size: 60, color: AppColors.neonPurple),
+                Image.asset(
+                  'assets/images/lamicoLogo.png',
+                  width: 100, height: 100,
+                  fit: BoxFit.contain,
                 ),
-              ),
+              ]),
               const SizedBox(height: 24),
               ShaderMask(
                 shaderCallback: (b) => AppColors.primaryGrad.createShader(b),

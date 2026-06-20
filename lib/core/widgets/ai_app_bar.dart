@@ -32,6 +32,10 @@ class AiAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               if (leading != null) ...[leading!, const SizedBox(width: 8)],
+              Image.asset('assets/images/lamicoLogo.png', height: 32,
+                  errorBuilder: (context, error, _) => const Icon(
+                      Icons.show_chart, color: AppColors.neonPurple, size: 28)),
+              const SizedBox(width: 8),
               Container(width: 1, height: 24,
                   color: AppColors.neonPurple.withValues(alpha: 0.5)),
               const SizedBox(width: 10),
@@ -40,7 +44,7 @@ class AiAppBar extends StatelessWidget implements PreferredSizeWidget {
                     style: AppText.h3,
                     textDirection: TextDirection.rtl),
               ),
-              if (actions != null) ...actions!,
+              ...?actions,
             ],
           ),
         ),

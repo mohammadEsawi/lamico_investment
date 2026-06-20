@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
@@ -40,6 +39,8 @@ import '../../features/worker/screens/worker_dashboard_screen.dart';
 import '../../features/worker/screens/worker_production_screen.dart';
 import '../../features/worker/screens/worker_attendance_screen.dart';
 import '../../features/worker/screens/worker_tools_screen.dart';
+import '../../features/worker/screens/worker_electricity_screen.dart';
+import '../../features/admin/screens/admin_production_screen.dart';
 import '../../features/sales_rep/screens/sales_dashboard_screen.dart';
 import '../../features/sales_rep/screens/sales_customers_screen.dart';
 import '../../features/sales_rep/screens/sales_quotations_screen.dart';
@@ -70,7 +71,8 @@ final appRouter = GoRouter(
     GoRoute(path: '/admin/settings',  builder: (c, s) => const AdminSettingsScreen()),
     GoRoute(path: '/admin/audit',     builder: (c, s) => const AdminAuditLogsScreen()),
     GoRoute(path: '/admin/requests',  builder: (c, s) => const AdminRegistrationRequestsScreen()),
-    GoRoute(path: '/admin/workers',   builder: (c, s) => const AdminWorkerOverviewScreen()),
+    GoRoute(path: '/admin/workers',    builder: (c, s) => const AdminWorkerOverviewScreen()),
+    GoRoute(path: '/admin/production', builder: (c, s) => const AdminProductionScreen()),
     // Engineer
     GoRoute(path: '/engineer',             builder: (c, s) => const EngineerDashboardScreen()),
     GoRoute(path: '/engineer/maintenance', builder: (c, s) => const EngineerMaintenanceScreen()),
@@ -92,7 +94,8 @@ final appRouter = GoRouter(
     GoRoute(path: '/worker',             builder: (c, s) => const WorkerDashboardScreen()),
     GoRoute(path: '/worker/production',  builder: (c, s) => const WorkerProductionScreen()),
     GoRoute(path: '/worker/attendance',  builder: (c, s) => const WorkerAttendanceScreen()),
-    GoRoute(path: '/worker/tools',       builder: (c, s) => const WorkerToolsScreen()),
+    GoRoute(path: '/worker/tools',        builder: (c, s) => const WorkerToolsScreen()),
+    GoRoute(path: '/worker/electricity',  builder: (c, s) => const WorkerElectricityScreen()),
     // Sales Rep
     GoRoute(path: '/sales',            builder: (c, s) => const SalesDashboardScreen()),
     GoRoute(path: '/sales/customers',  builder: (c, s) => const SalesCustomersScreen()),

@@ -64,6 +64,7 @@ class AdminNav extends StatelessWidget {
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 8),
           children: [
+            _tile(context, 'الإنتاج والكهرباء', Icons.factory_outlined, AppColors.neonOrange, '/admin/production'),
             _tile(context, 'الورديات', Icons.schedule, AppColors.neonPurple, '/admin/shifts'),
             _tile(context, 'الحضور', Icons.fingerprint, AppColors.neonCyan, '/admin/attendance'),
             _tile(context, 'الرواتب', Icons.payments_outlined, AppColors.neonGreen, '/admin/payroll'),

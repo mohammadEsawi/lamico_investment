@@ -267,10 +267,12 @@ export const loginUser = async (
   return {
     status: 200,
     data: {
+      id: refreshedUser.id,
       name: refreshedUser.fullName,
       email: refreshedUser.email,
       token,
       role: refreshedUser.role,
+      isActive: refreshedUser.isActive,
       profileImage: refreshedUser.profileImage,
     },
   };

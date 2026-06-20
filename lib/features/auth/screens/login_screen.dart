@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(children: [
                     Stack(alignment: Alignment.center, children: [
                       Container(
-                        width: 110, height: 110,
+                        width: 130, height: 130,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: RadialGradient(colors: [
@@ -75,8 +75,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ]),
                         ),
                       ),
-                      const Icon(Icons.show_chart,
-                          size: 60, color: AppColors.neonPurple),
+                      Image.asset(
+                        'assets/images/lamicoLogo.png',
+                        width: 100, height: 100,
+                        fit: BoxFit.contain,
+                      ),
                     ]),
                     const SizedBox(height: 16),
                     ShaderMask(

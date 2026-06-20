@@ -12,7 +12,7 @@ class AuthService {
     final res = await ApiService.post('/auth/login',
         data: {'email': email, 'password': password});
     final token = res.data['token'] as String;
-    final user = UserModel.fromJson(res.data['user']);
+    final user = UserModel.fromJson(res.data as Map<String, dynamic>);
     await StorageService.saveToken(token);
     await StorageService.saveUser(jsonEncode(user.toJson()));
     _currentUser = user;

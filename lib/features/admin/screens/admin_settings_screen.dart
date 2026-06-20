@@ -15,7 +15,6 @@ class AdminSettingsScreen extends StatefulWidget {
 }
 
 class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
-  Map<String, dynamic>? _settings;
   bool _loading = true;
   bool _saving = false;
 
@@ -36,10 +35,9 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
   Future<void> _load() async {
     setState(() => _loading = true);
     try {
-      final res = await ApiService.get('/settings/');
+      final res = await ApiService.get('/settings/system');
       final data = res.data as Map<String, dynamic>? ?? {};
       setState(() {
-        _settings = data;
         _targetCtrl.text   = '${data['dailyProductionTarget'] ?? ''}';
         _electricCtrl.text = '${data['electricityCostPerKwh'] ?? ''}';
         _notifProduction   = data['notifProduction']  ?? true;
@@ -53,7 +51,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
   Future<void> _save() async {
     setState(() => _saving = true);
     try {
-      await ApiService.put('/settings/', data: {
+      await ApiService.put('/settings/system', data: {
         'dailyProductionTarget': int.tryParse(_targetCtrl.text) ?? 0,
         'electricityCostPerKwh': double.tryParse(_electricCtrl.text) ?? 0.0,
         'notifProduction':  _notifProduction,

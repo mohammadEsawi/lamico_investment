@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
@@ -24,7 +24,7 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
   Future<void> _load() async {
     setState(() => _loading = true);
     try {
-      final res = await ApiService.get('/quality/me');
+      final res = await ApiService.get('/quality-checks/me');
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['inspections'] ?? data['data'] ?? []);
@@ -80,7 +80,7 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
                 ),
                 onPressed: () async {
                   try {
-                    await ApiService.post('/quality/', data: {'notes': notesCtrl.text.trim()});
+                    await ApiService.post('/quality-checks', data: {'description': notesCtrl.text.trim()});
                     if (ctx.mounted) Navigator.pop(ctx);
                     _load();
                   } catch (_) {}
@@ -117,7 +117,7 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
                         child: ListView.separated(
                           padding: const EdgeInsets.all(16),
                           itemCount: _items.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          separatorBuilder: (_, _) => const SizedBox(height: 12),
                           itemBuilder: (_, i) {
                             final q = _items[i];
                             final passed = q['passed'] as bool? ?? true;

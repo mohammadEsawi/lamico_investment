@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
@@ -36,7 +36,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
   Future<void> _toggleActive(String id, bool currentStatus) async {
     try {
-      await ApiService.patch('/users/$id/toggle-active');
+      await ApiService.put('/users/$id', data: {'isActive': !currentStatus});
       _load();
     } catch (_) {}
   }
@@ -107,7 +107,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                         child: ListView.separated(
                           padding: const EdgeInsets.all(16),
                           itemCount: _users.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          separatorBuilder: (_, _) => const SizedBox(height: 12),
                           itemBuilder: (_, i) {
                             final u = _users[i];
                             final role = u['role'] ?? '';
@@ -122,8 +122,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                     radius: 22,
                                     backgroundColor: color.withValues(alpha: 0.2),
                                     child: Text(
-                                      (u['name'] ?? '?').toString().isNotEmpty
-                                          ? (u['name'] as String)[0]
+                                      (u['fullName'] ?? '?').toString().isNotEmpty
+                                          ? (u['fullName'] as String)[0]
                                           : '?',
                                       style: AppText.h3.copyWith(color: color),
                                     ),
@@ -133,7 +133,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(u['name'] ?? '--',
+                                        Text(u['fullName'] ?? '--',
                                             style: AppText.h3,
                                             textDirection: TextDirection.rtl),
                                         Text(u['email'] ?? '--',
@@ -158,7 +158,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                       Switch(
                                         value: isActive,
                                         onChanged: (v) => _toggleActive(u['id'] ?? '', isActive),
-                                        activeColor: AppColors.neonGreen,
+                                        activeThumbColor: AppColors.neonGreen,
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.delete_outline,

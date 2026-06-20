@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
@@ -26,7 +26,7 @@ class _AdminRegistrationRequestsScreenState
   Future<void> _load() async {
     setState(() => _loading = true);
     try {
-      final res = await ApiService.get('/registration-request/');
+      final res = await ApiService.get('/registration-requests');
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['requests'] ?? data['data'] ?? []);
@@ -37,14 +37,14 @@ class _AdminRegistrationRequestsScreenState
 
   Future<void> _approve(String id) async {
     try {
-      await ApiService.patch('/registration-request/$id/approve');
+      await ApiService.patch('/registration-requests/$id/approve');
       _load();
     } catch (_) {}
   }
 
   Future<void> _reject(String id) async {
     try {
-      await ApiService.patch('/registration-request/$id/reject');
+      await ApiService.patch('/registration-requests/$id/reject');
       _load();
     } catch (_) {}
   }
@@ -69,7 +69,7 @@ class _AdminRegistrationRequestsScreenState
                         child: ListView.separated(
                           padding: const EdgeInsets.all(16),
                           itemCount: _items.length,
-                          separatorBuilder: (_, _x) => const SizedBox(height: 12),
+                          separatorBuilder: (_, _) => const SizedBox(height: 12),
                           itemBuilder: (_, i) {
                             final r = _items[i];
                             final status = r['status'] as String? ?? 'PENDING';
@@ -85,7 +85,7 @@ class _AdminRegistrationRequestsScreenState
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(r['name'] ?? '--',
+                                          Text(r['fullName'] ?? '--',
                                               style: AppText.h3,
                                               textDirection: TextDirection.rtl),
                                           Text(r['email'] ?? '--',
@@ -116,9 +116,9 @@ class _AdminRegistrationRequestsScreenState
                                       ),
                                     ],
                                   ),
-                                  if (r['notes'] != null && r['notes'].toString().isNotEmpty) ...[
+                                  if (r['message'] != null && r['message'].toString().isNotEmpty) ...[
                                     const SizedBox(height: 8),
-                                    Text('ملاحظات: ${r['notes']}',
+                                    Text('ملاحظات: ${r['message']}',
                                         style: AppText.caption,
                                         textDirection: TextDirection.rtl),
                                   ],
