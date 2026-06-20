@@ -2,5 +2,7 @@ node_modules
 # Keep environment variables out of version control
 .env
 .env.docker
-
+.env
+.env.*
+!.env.example
 /src/config/generated/prisma

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text.dart';
 
@@ -19,11 +20,12 @@ class AiAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: c.bgCard,
         border: Border(
-          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+          bottom: BorderSide(color: c.border),
         ),
       ),
       child: SafeArea(
@@ -41,7 +43,7 @@ class AiAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(title,
-                    style: AppText.h3,
+                    style: AppText.h3.copyWith(color: c.textPrimary),
                     textDirection: TextDirection.rtl),
               ),
               ...?actions,

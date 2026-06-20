@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import '../theme/app_colors.dart';
 
 class AiBackground extends StatelessWidget {
@@ -8,9 +9,10 @@ class AiBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bg = context.colors.bg;
     return Stack(
       children: [
-        Container(color: AppColors.bg),
+        Container(color: bg),
         Positioned(
           top: -100, left: -100,
           child: Container(
@@ -18,7 +20,7 @@ class AiBackground extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(colors: [
-                AppColors.neonPurple.withValues(alpha: 0.15),
+                AppColors.neonPurple.withValues(alpha: 0.12),
                 Colors.transparent,
               ]),
             ),
@@ -31,7 +33,7 @@ class AiBackground extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(colors: [
-                AppColors.neonBlue.withValues(alpha: 0.1),
+                AppColors.neonBlue.withValues(alpha: 0.08),
                 Colors.transparent,
               ]),
             ),

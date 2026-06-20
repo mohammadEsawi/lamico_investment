@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/providers/theme_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/api_service.dart';
-import 'core/theme/app_colors.dart';
+import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   ApiService.init();
-  runApp(const LamecoApp());
+  runApp(const ProviderScope(child: LamecoApp()));
 }
 
-class LamecoApp extends StatelessWidget {
+class LamecoApp extends ConsumerWidget {
   const LamecoApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
     return MaterialApp.router(
       title: 'لاميكو الاستثمارية-بيتا',
       debugShowCheckedModeBanner: false,
@@ -25,25 +28,9 @@ class LamecoApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(
-        fontFamily: 'Cairo',
-        scaffoldBackgroundColor: AppColors.bg,
-        colorScheme: ColorScheme.dark(
-          primary: AppColors.neonPurple,
-          secondary: AppColors.neonCyan,
-          surface: AppColors.bgCard,
-        ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.bgCard,
-          elevation: 0,
-        ),
-        navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: AppColors.bgCard,
-          indicatorColor: AppColors.neonPurple.withValues(alpha: 0.2),
-          surfaceTintColor: Colors.transparent,
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeMode,
       routerConfig: appRouter,
     );
   }
