@@ -206,6 +206,39 @@ class _AccountantInvoicesScreenState extends State<AccountantInvoicesScreen> {
                   onChanged: (v) => ss(() => status = v!),
                 ),
               ),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.neonGreen),
+                    icon: const Icon(Icons.payments_outlined, size: 16),
+                    label: const Text('دفع', style: TextStyle(fontFamily: 'Cairo')),
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      try {
+                        await ApiService.patch('/invoices/${inv['id']}/payment',
+                            data: {'paymentDate': DateTime.now().toIso8601String()});
+                        _load();
+                      } catch (_) {}
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.neonCyan),
+                    icon: const Icon(Icons.check_circle_outline, size: 16),
+                    label: const Text('تأكيد', style: TextStyle(fontFamily: 'Cairo')),
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      try {
+                        await ApiService.patch('/invoices/${inv['id']}/confirm', data: {});
+                        _load();
+                      } catch (_) {}
+                    },
+                  ),
+                ),
+              ]),
               const SizedBox(height: 16),
               Row(children: [
                 Expanded(

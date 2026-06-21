@@ -31,6 +31,8 @@ class WorkerToolsScreen extends StatelessWidget {
           'الإبلاغ عن مشاكل الجودة', '/worker/quality-issues'),
       _Tool('التوقفات الصغيرة', Icons.timer_off_outlined,     AppColors.neonBlue,
           'تسجيل التوقفات الصغيرة', '/worker/micro-stops'),
+      _Tool('تنبيهات الكهرباء',  Icons.electric_bolt_outlined, AppColors.neonGold,
+          'الإبلاغ عن شذوذ في الكهرباء', '/worker/electricity-alerts'),
     ];
 
     return Scaffold(
@@ -115,23 +117,25 @@ class _ToolSheetState extends State<_ToolSheet>
   bool _loadingHistory = false;
 
   static const _endpointMap = {
-    '/worker/machine-stops':  '/worker-tools/machine-stop-alerts',
-    '/worker/checklists':     '/worker-tools/shift-checklists',
-    '/worker/waste':          '/worker-tools/material-waste',
-    '/worker/targets':        '/worker-tools/daily-targets',
-    '/worker/kaizen':         '/worker-tools/kaizen',
-    '/worker/quality-issues': '/worker-tools/quality-issues',
-    '/worker/micro-stops':    '/worker-tools/micro-stops',
+    '/worker/machine-stops':       '/worker-tools/machine-stop-alerts',
+    '/worker/checklists':          '/worker-tools/shift-checklists',
+    '/worker/waste':               '/worker-tools/material-waste',
+    '/worker/targets':             '/worker-tools/daily-targets',
+    '/worker/kaizen':              '/worker-tools/kaizen',
+    '/worker/quality-issues':      '/worker-tools/quality-issues',
+    '/worker/micro-stops':         '/worker-tools/micro-stops',
+    '/worker/electricity-alerts':  '/worker-tools/electricity-anomaly-alerts',
   };
 
   static const _historyEndpointMap = {
-    '/worker/machine-stops':  '/worker-tools/machine-stop-alerts/mine',
-    '/worker/checklists':     '/worker-tools/shift-checklists/mine',
-    '/worker/waste':          '/worker-tools/material-waste/mine',
-    '/worker/targets':        '/worker-tools/daily-targets/mine',
-    '/worker/kaizen':         '/worker-tools/kaizen/mine',
-    '/worker/quality-issues': '/worker-tools/quality-issues/mine',
-    '/worker/micro-stops':    '/worker-tools/micro-stops/mine',
+    '/worker/machine-stops':       '/worker-tools/machine-stop-alerts/mine',
+    '/worker/checklists':          '/worker-tools/shift-checklists/mine',
+    '/worker/waste':               '/worker-tools/material-waste/mine',
+    '/worker/targets':             '/worker-tools/daily-targets/mine',
+    '/worker/kaizen':              '/worker-tools/kaizen/mine',
+    '/worker/quality-issues':      '/worker-tools/quality-issues/mine',
+    '/worker/micro-stops':         '/worker-tools/micro-stops/mine',
+    '/worker/electricity-alerts':  '/worker-tools/electricity-anomaly-alerts/mine',
   };
 
   @override
@@ -182,13 +186,14 @@ class _ToolSheetState extends State<_ToolSheet>
     final id = item['id'];
     if (id == null) return;
     final featureMap = {
-      '/worker/machine-stops':  'machine-stop-alerts',
-      '/worker/checklists':     'shift-checklists',
-      '/worker/waste':          'material-waste',
-      '/worker/targets':        'daily-targets',
-      '/worker/kaizen':         'kaizen',
-      '/worker/quality-issues': 'quality-issues',
-      '/worker/micro-stops':    'micro-stops',
+      '/worker/machine-stops':      'machine-stop-alerts',
+      '/worker/checklists':         'shift-checklists',
+      '/worker/waste':              'material-waste',
+      '/worker/targets':            'daily-targets',
+      '/worker/kaizen':             'kaizen',
+      '/worker/quality-issues':     'quality-issues',
+      '/worker/micro-stops':        'micro-stops',
+      '/worker/electricity-alerts': 'electricity-anomaly-alerts',
     };
     final feature = featureMap[widget.tool.route];
     if (feature == null) return;

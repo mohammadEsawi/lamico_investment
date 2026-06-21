@@ -82,6 +82,13 @@ class AdminNav extends StatelessWidget {
             _tile(context, 'الإعدادات', Icons.settings_outlined, AppColors.neonPurple, '/admin/settings'),
             _tile(context, 'سجلات التدقيق', Icons.history, AppColors.neonCyan, '/admin/audit'),
             _tile(context, 'التقارير', Icons.assessment_outlined, AppColors.neonPurple, '/admin/reports'),
+            _tile(context, 'تسوية بنكية', Icons.account_balance_outlined, AppColors.neonCyan, '/admin/bank-reconciliation'),
+            _tile(context, 'الإقرارات الضريبية', Icons.receipt_outlined, AppColors.neonGold, '/admin/tax-filings'),
+            _tile(context, 'المشتريات', Icons.shopping_bag_outlined, AppColors.neonOrange, '/admin/purchases'),
+            _tile(context, 'مردودات العملاء', Icons.assignment_return_outlined, AppColors.neonRed, '/admin/customer-returns'),
+            _tile(context, 'تحليل التكاليف', Icons.pie_chart_outline, AppColors.neonPurple, '/admin/cost-analysis'),
+            _tile(context, 'سير الموافقات', Icons.account_tree_outlined, AppColors.neonGreen, '/admin/approval-workflows'),
+            _tile(context, 'الإعدادات المالية', Icons.tune_outlined, AppColors.neonCyan, '/admin/financial-settings'),
             _tile(context, 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan, '/chat'),
             _tile(context, 'الملف الشخصي', Icons.person_outline, c.textSecondary, '/profile'),
             ListTile(

@@ -21,6 +21,7 @@ class SalesDashboardScreen extends StatefulWidget {
 class _SalesDashboardScreenState extends State<SalesDashboardScreen> {
   Map<String, dynamic>? _data;
   bool _loading = true;
+  bool _attendLoading = false;
 
   @override
   void initState() { super.initState(); _load(); }
@@ -30,6 +31,36 @@ class _SalesDashboardScreenState extends State<SalesDashboardScreen> {
       final res = await ApiService.get('/sales-rep/dashboard');
       setState(() { _data = res.data; _loading = false; });
     } catch (_) { setState(() => _loading = false); }
+  }
+
+  Future<void> _checkIn() async {
+    setState(() => _attendLoading = true);
+    try {
+      await ApiService.post('/attendance/check-in', data: {});
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('تم تسجيل الحضور', style: TextStyle(fontFamily: 'Cairo')),
+          backgroundColor: AppColors.neonGreen,
+        ));
+      }
+    } catch (_) {} finally {
+      if (mounted) { setState(() => _attendLoading = false); }
+    }
+  }
+
+  Future<void> _checkOut() async {
+    setState(() => _attendLoading = true);
+    try {
+      await ApiService.post('/attendance/check-out', data: {});
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('تم تسجيل الانصراف', style: TextStyle(fontFamily: 'Cairo')),
+          backgroundColor: AppColors.neonCyan,
+        ));
+      }
+    } catch (_) {} finally {
+      if (mounted) { setState(() => _attendLoading = false); }
+    }
   }
 
   @override
@@ -132,12 +163,62 @@ class _SalesDashboardScreenState extends State<SalesDashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(textDirection: TextDirection.rtl, children: [
+                            const Icon(Icons.fingerprint, color: AppColors.neonGreen, size: 20),
+                            const SizedBox(width: 8),
+                            Text('الحضور', style: AppText.h3),
+                          ]),
+                          const SizedBox(height: 12),
+                          Row(children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.neonGreen,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10))),
+                                onPressed: _attendLoading ? null : _checkIn,
+                                icon: _attendLoading
+                                    ? const SizedBox(width: 16, height: 16,
+                                        child: CircularProgressIndicator(
+                                            color: Colors.white, strokeWidth: 2))
+                                    : const Icon(Icons.login, color: Colors.white, size: 18),
+                                label: const Text('تسجيل حضور',
+                                    style: TextStyle(fontFamily: 'Cairo', color: Colors.white)),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.neonCyan,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10))),
+                                onPressed: _attendLoading ? null : _checkOut,
+                                icon: const Icon(Icons.logout, size: 18),
+                                label: const Text('تسجيل انصراف',
+                                    style: TextStyle(fontFamily: 'Cairo')),
+                              ),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  AnimatedCard(
+                    delay: 250,
+                    child: GlassCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(textDirection: TextDirection.rtl, children: [
                             const Icon(Icons.link, color: AppColors.neonGold, size: 20),
                             const SizedBox(width: 8),
                             Text('الوصول السريع', style: AppText.h3),
                           ]),
                           const SizedBox(height: 12),
                           Wrap(spacing: 8, runSpacing: 8, children: [
+                            _quickBtn('مبيعات', Icons.point_of_sale_outlined, AppColors.neonGold,
+                                () => context.push('/sales/sales')),
                             _quickBtn('عملاء', Icons.people_outline, AppColors.neonGold,
                                 () => context.push('/sales/customers')),
                             _quickBtn('عروض', Icons.request_quote_outlined, AppColors.neonCyan,

@@ -65,6 +65,14 @@ import '../../features/sales_rep/screens/sales_targets_screen.dart';
 import '../../features/sales_rep/screens/sales_sales_screen.dart';
 import '../../features/worker/screens/worker_payroll_screen.dart';
 import '../../features/shared/screens/inventory_screen.dart';
+import '../../features/admin/screens/admin_bank_reconciliation_screen.dart';
+import '../../features/admin/screens/admin_tax_filings_screen.dart';
+import '../../features/admin/screens/admin_purchases_screen.dart';
+import '../../features/admin/screens/admin_customer_returns_screen.dart';
+import '../../features/admin/screens/admin_cost_analysis_screen.dart';
+import '../../features/admin/screens/admin_approval_workflows_screen.dart';
+import '../../features/admin/screens/admin_financial_settings_screen.dart';
+import '../../features/engineer/screens/engineer_support_machine_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
@@ -99,7 +107,14 @@ final appRouter = GoRouter(
     GoRoute(path: '/admin/maintenance',        builder: (c, s) => const AdminMaintenanceScreen()),
     GoRoute(path: '/admin/machine-health',     builder: (c, s) => const AdminMachineHealthScreen()),
     GoRoute(path: '/admin/maintenance-costs',  builder: (c, s) => const AdminMaintenanceCostsScreen()),
-    GoRoute(path: '/admin/spare-parts',        builder: (c, s) => const AdminSparePartsScreen()),
+    GoRoute(path: '/admin/spare-parts',              builder: (c, s) => const AdminSparePartsScreen()),
+    GoRoute(path: '/admin/bank-reconciliation',       builder: (c, s) => const AdminBankReconciliationScreen()),
+    GoRoute(path: '/admin/tax-filings',               builder: (c, s) => const AdminTaxFilingsScreen()),
+    GoRoute(path: '/admin/purchases',                 builder: (c, s) => const AdminPurchasesScreen()),
+    GoRoute(path: '/admin/customer-returns',          builder: (c, s) => const AdminCustomerReturnsScreen()),
+    GoRoute(path: '/admin/cost-analysis',             builder: (c, s) => const AdminCostAnalysisScreen()),
+    GoRoute(path: '/admin/approval-workflows',        builder: (c, s) => const AdminApprovalWorkflowsScreen()),
+    GoRoute(path: '/admin/financial-settings',        builder: (c, s) => const AdminFinancialSettingsScreen()),
     // Engineer (new)
     GoRoute(path: '/engineer/maintenance-schedule', builder: (c, s) => const EngineerMaintenanceScheduleScreen()),
     GoRoute(path: '/engineer/machine-health',       builder: (c, s) => const EngineerMachineHealthScreen()),
@@ -116,7 +131,8 @@ final appRouter = GoRouter(
     GoRoute(path: '/engineer/inventory',   builder: (c, s) => const EngineerInventoryScreen()),
     GoRoute(path: '/engineer/documents',    builder: (c, s) => const EngineerDocumentsScreen()),
     GoRoute(path: '/engineer/electricity', builder: (c, s) => const EngineerElectricityScreen()),
-    GoRoute(path: '/engineer/production',  builder: (c, s) => const EngineerProductionScreen()),
+    GoRoute(path: '/engineer/production',       builder: (c, s) => const EngineerProductionScreen()),
+    GoRoute(path: '/engineer/support-machine',  builder: (c, s) => const EngineerSupportMachineScreen()),
     // Accountant
     GoRoute(path: '/accountant',              builder: (c, s) => const AccountantDashboardScreen()),
     GoRoute(path: '/accountant/invoices',     builder: (c, s) => const AccountantInvoicesScreen()),

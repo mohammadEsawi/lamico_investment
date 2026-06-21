@@ -77,6 +77,7 @@ class EngineerNav extends StatelessWidget {
             _tile(context, 'تنبيهات المواد', Icons.warning_amber_outlined, AppColors.neonRed, '/engineer/raw-material-alerts'),
             _tile(context, 'الجرد', Icons.inventory_outlined, AppColors.neonOrange, '/engineer/inventory'),
             _tile(context, 'الوثائق التقنية', Icons.description_outlined, AppColors.neonCyan, '/engineer/documents'),
+            _tile(context, 'قراءات الآلات الداعمة', Icons.speed_outlined, AppColors.neonOrange, '/engineer/support-machine'),
             _tile(context, 'الدردشة', Icons.chat_bubble_outline, AppColors.neonPurple, '/chat'),
             _tile(context, 'الملف الشخصي', Icons.person_outline, c.textSecondary, '/profile'),
             ListTile(
