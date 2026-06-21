@@ -50,14 +50,14 @@ const darkPalette = Palette(
 // ── Light Palette ─────────────────────────────────────────────────────────────
 
 const lightPalette = Palette(
-  bg         : Color(0xFFFFFFFF),
-  bgCard     : Color(0xFFF8FAFC),
-  bgSurface  : Color(0xFFE2E8F0),
-  bgGlass    : Color(0x06000000),
-  textPrimary  : Color(0xFF0F172A),
-  textSecondary: Color(0xFF475569),
+  bg         : Color(0xFFF7F4EE),
+  bgCard     : Color(0xFFFFFFFF),
+  bgSurface  : Color(0xFFEEEAE0),
+  bgGlass    : Color(0x0A000000),
+  textPrimary  : Color(0xFF1A1F2E),
+  textSecondary: Color(0xFF4A5568),
   textMuted    : Color(0xFF94A3B8),
-  border       : Color(0x14000000),
+  border       : Color(0x18000000),
   brightness   : Brightness.light,
 );
 
@@ -122,14 +122,16 @@ class AppTheme {
       foregroundColor: Colors.white,
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: Colors.black,
-      indicatorColor: Colors.transparent,
+      backgroundColor: const Color(0xFF1E3A8A),
+      indicatorColor: Colors.white.withValues(alpha: 0.18),
       surfaceTintColor: Colors.transparent,
-      shadowColor: Colors.transparent,
+      shadowColor: Colors.black.withValues(alpha: 0.3),
+      elevation: 8,
       iconTheme: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
         return IconThemeData(
-          color: selected ? Accent.orange : const Color(0xFF9CA3AF),
+          color: selected ? Colors.white : const Color(0xFFBFD4FF),
+          size: selected ? 26 : 24,
         );
       }),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
@@ -137,8 +139,8 @@ class AppTheme {
         return TextStyle(
           fontFamily: 'Cairo',
           fontSize: 11,
-          color: selected ? Accent.orange : const Color(0xFF9CA3AF),
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+          color: selected ? Colors.white : const Color(0xFFBFD4FF),
+          fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
         );
       }),
     ),

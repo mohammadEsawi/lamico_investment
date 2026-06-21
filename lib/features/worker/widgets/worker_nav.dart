@@ -23,22 +23,22 @@ class WorkerNav extends StatelessWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.home, color: Colors.white),
           label: 'الرئيسية',
         ),
         NavigationDestination(
           icon: Icon(Icons.inventory_2_outlined),
-          selectedIcon: Icon(Icons.inventory_2, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.inventory_2, color: Colors.white),
           label: 'الإنتاج',
         ),
         NavigationDestination(
           icon: Icon(Icons.fingerprint),
-          selectedIcon: Icon(Icons.fingerprint, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.fingerprint, color: Colors.white),
           label: 'الحضور',
         ),
         NavigationDestination(
           icon: Icon(Icons.handyman_outlined),
-          selectedIcon: Icon(Icons.handyman, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.handyman, color: Colors.white),
           label: 'أدوات',
         ),
       ],

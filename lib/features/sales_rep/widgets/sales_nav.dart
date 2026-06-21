@@ -23,27 +23,27 @@ class SalesNav extends StatelessWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.home, color: Colors.white),
           label: 'الرئيسية',
         ),
         NavigationDestination(
           icon: Icon(Icons.people_outline),
-          selectedIcon: Icon(Icons.people, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.people, color: Colors.white),
           label: 'العملاء',
         ),
         NavigationDestination(
           icon: Icon(Icons.request_quote_outlined),
-          selectedIcon: Icon(Icons.request_quote, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.request_quote, color: Colors.white),
           label: 'العروض',
         ),
         NavigationDestination(
           icon: Icon(Icons.directions_car_outlined),
-          selectedIcon: Icon(Icons.directions_car, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.directions_car, color: Colors.white),
           label: 'الزيارات',
         ),
         NavigationDestination(
           icon: Icon(Icons.flag_outlined),
-          selectedIcon: Icon(Icons.flag, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.flag, color: Colors.white),
           label: 'الأهداف',
         ),
       ],

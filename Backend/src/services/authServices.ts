@@ -108,6 +108,13 @@ export const registerUser = async (
     return { status: 400, message: "Password must be at least 8 characters" };
   }
 
+  if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+    return {
+      status: 400,
+      message: "Password must contain uppercase letters, lowercase letters, and numbers",
+    };
+  }
+
   if (!Object.values($Enums.UserRole).includes(role)) {
     return { status: 400, message: "Invalid role" };
   }
@@ -324,25 +331,17 @@ export const requestPasswordReset = async (
     select: { id: true, email: true },
   });
 
-  if (!user) {
-    console.log("forgot-password: no account matched the requested email");
-  }
-
   if (user?.email) {
-    if (!isSmtpConfigured) {
-      console.log("forgot-password: SMTP not configured — reset link not sent for user", user.id);
-    } else {
+    if (isSmtpConfigured) {
       const token = generateActionToken(user.id, "reset-password", "1h");
       const resetUrl = buildResetPasswordLink(token);
 
-      const emailSent = await sendEmailSafely({
+      await sendEmailSafely({
         to: user.email,
-        subject: "Reset your Plasticon password",
+        subject: "Reset your password",
         text: `Reset your password using this link: ${resetUrl}`,
         html: `<p>You requested a password reset.</p><p>Use this link to continue: <a href="${resetUrl}">Reset password</a></p>`,
       });
-
-      console.log("forgot-password: reset flow executed", { userId: user.id, emailSent });
     }
   }
 

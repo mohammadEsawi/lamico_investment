@@ -48,13 +48,15 @@ class _LoginScreenState extends State<LoginScreen> {
       final msg = e.toString();
       if (msg.contains('403') || msg.contains('verify')) {
         setState(() => _error = 'يرجى تأكيد البريد الإلكتروني أولاً');
-      } else if (msg.contains('401') || msg.contains('invalid')) {
+      } else if (msg.contains('401') || msg.contains('invalid') || msg.contains('credentials')) {
         setState(() => _error = 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      } else if (msg.contains('429') || msg.contains('Too many')) {
+        setState(() => _error = 'محاولات كثيرة، انتظر 15 دقيقة وأعد المحاولة');
       } else if (msg.contains('SocketException') || msg.contains('connection') ||
                  msg.contains('Failed host') || msg.contains('Connection refused')) {
-        setState(() => _error = 'لا يوجد اتصال بالسيرفر — تأكد أن الباكند شغّال وأن IP صحيح');
+        setState(() => _error = 'لا يوجد اتصال بالسيرفر');
       } else {
-        setState(() => _error = 'خطأ: $msg');
+        setState(() => _error = 'حدث خطأ، حاول مرة أخرى');
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -76,18 +78,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(children: [
                     Stack(alignment: Alignment.center, children: [
                       Container(
-                        width: 130, height: 130,
+                        width: 200, height: 200,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: RadialGradient(colors: [
-                            AppColors.neonPurple.withValues(alpha: 0.3),
+                            AppColors.navBar.withValues(alpha: 0.12),
                             Colors.transparent,
                           ]),
                         ),
                       ),
                       Image.asset(
                         'assets/images/lamicoLogo.png',
-                        width: 100, height: 100,
+                        width: 160, height: 160,
                         fit: BoxFit.contain,
                       ),
                     ]),
@@ -161,8 +163,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         icon: Icons.email_outlined,
                         controller: _emailCtrl,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'أدخل البريد الإلكتروني' : null,
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'أدخل البريد الإلكتروني';
+                          if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(v)) {
+                            return 'البريد الإلكتروني غير صحيح';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 14),
                       GlassInput(

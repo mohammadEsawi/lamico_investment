@@ -128,14 +128,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icons.email_outlined,
                         controller: _emailCtrl,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (v) => v == null || v.isEmpty ? 'أدخل البريد' : null),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'أدخل البريد';
+                          if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(v)) {
+                            return 'البريد الإلكتروني غير صحيح';
+                          }
+                          return null;
+                        }),
                     const SizedBox(height: 12),
                     GlassInput(
                         hint: 'كلمة المرور',
                         icon: Icons.lock_outline,
                         isPassword: true,
                         controller: _passCtrl,
-                        validator: (v) => v == null || v.length < 6 ? 'كلمة المرور قصيرة' : null),
+                        validator: (v) {
+                          if (v == null || v.length < 8) return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+                          if (!RegExp(r'[A-Z]').hasMatch(v)) return 'يجب أن تحتوي على حرف كبير';
+                          if (!RegExp(r'[a-z]').hasMatch(v)) return 'يجب أن تحتوي على حرف صغير';
+                          if (!RegExp(r'[0-9]').hasMatch(v)) return 'يجب أن تحتوي على رقم';
+                          return null;
+                        }),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

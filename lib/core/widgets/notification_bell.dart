@@ -45,7 +45,7 @@ class _NotificationBellState extends State<NotificationBell> {
       alignment: Alignment.center,
       children: [
         IconButton(
-          icon: const Icon(Icons.notifications_outlined, color: AppColors.textSecondary),
+          icon: const Icon(Icons.notifications_outlined, color: Colors.white),
           onPressed: () async {
             await context.push('/notifications');
             if (mounted) _fetchCount();

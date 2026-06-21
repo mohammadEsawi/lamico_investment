@@ -77,13 +77,20 @@ const allowedOrigins = Array.from(
   new Set([...defaultFrontendOrigins, ...configuredFrontendOrigins]),
 );
 
+const isDev = process.env.NODE_ENV !== "production";
+
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+    // allow same-origin and listed origins
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
       return;
     }
-
+    // in development only: allow any localhost port
+    if (isDev && /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+      callback(null, true);
+      return;
+    }
     callback(new Error(`origin ${origin} is not allowed by CORS`));
   },
   credentials: true,
@@ -94,7 +101,7 @@ const corsOptions: CorsOptions = {
 const app = express();
 const server = createServer(app);
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
@@ -106,7 +113,7 @@ app.use(
   "/pictures",
   (_req, res, next) => {
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    res.removeHeader("X-Frame-Options"); // allow <iframe> embedding from frontend origin
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
     next();
   },
   express.static(path.resolve(__dirname, "..", "prisma", "pictures")),

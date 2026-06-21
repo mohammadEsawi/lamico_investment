@@ -25,27 +25,27 @@ class AdminNav extends StatelessWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.home, color: Colors.white),
           label: 'الرئيسية',
         ),
         NavigationDestination(
           icon: Icon(Icons.bar_chart_outlined),
-          selectedIcon: Icon(Icons.bar_chart, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.bar_chart, color: Colors.white),
           label: 'التحليلات',
         ),
         NavigationDestination(
           icon: Icon(Icons.people_outline),
-          selectedIcon: Icon(Icons.people, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.people, color: Colors.white),
           label: 'المستخدمون',
         ),
         NavigationDestination(
           icon: Icon(Icons.precision_manufacturing_outlined),
-          selectedIcon: Icon(Icons.precision_manufacturing, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.precision_manufacturing, color: Colors.white),
           label: 'الآلات',
         ),
         NavigationDestination(
           icon: Icon(Icons.more_horiz),
-          selectedIcon: Icon(Icons.more_horiz, color: AppColors.neonOrange),
+          selectedIcon: Icon(Icons.more_horiz, color: Colors.white),
           label: 'المزيد',
         ),
       ],
