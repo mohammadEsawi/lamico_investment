@@ -25,7 +25,7 @@ class AdminReportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 9,
       child: Scaffold(
         backgroundColor: AppColors.bg,
         bottomNavigationBar: const AdminNav(selectedIndex: 0),
@@ -42,6 +42,10 @@ class AdminReportsScreen extends StatelessWidget {
                     _AttendanceTab(),
                     _PayrollTab(),
                     _SalesTab(),
+                    _ElectricityTab(),
+                    _ExpensesTab(),
+                    _MaintenanceTab(),
+                    _FinancialTab(),
                   ],
                 ),
               ),
@@ -73,6 +77,10 @@ class _TabBar extends StatelessWidget {
           Tab(text: 'الحضور'),
           Tab(text: 'الرواتب'),
           Tab(text: 'المبيعات'),
+          Tab(text: 'الكهرباء'),
+          Tab(text: 'المصاريف'),
+          Tab(text: 'الصيانة'),
+          Tab(text: 'المالية'),
         ],
       ),
     );
@@ -1233,6 +1241,514 @@ class _SalesTabState extends State<_SalesTab> {
               textDirection: TextDirection.rtl,
             ),
           ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+// ─── Electricity Tab ──────────────────────────────────────────────────────────
+
+class _ElectricityTab extends StatefulWidget {
+  @override
+  State<_ElectricityTab> createState() => _ElectricityTabState();
+}
+
+class _ElectricityTabState extends State<_ElectricityTab> {
+  DateTime _startDate = DateTime.now().subtract(const Duration(days: 29));
+  DateTime _endDate   = DateTime.now();
+
+  bool _loadingReport   = false;
+  bool _loadingReadings = false;
+  dynamic _reportData;
+  dynamic _readingsData;
+  String? _reportError;
+  String? _readingsError;
+
+  Future<void> _fetchReport() async {
+    setState(() { _loadingReport = true; _reportError = null; });
+    try {
+      final res = await ApiService.get('/electricity/report', params: {
+        'startDate': _formatDate(_startDate),
+        'endDate':   _formatDate(_endDate),
+      });
+      setState(() { _reportData = res.data; _loadingReport = false; });
+    } catch (e) {
+      setState(() { _reportError = e.toString(); _loadingReport = false; });
+    }
+  }
+
+  Future<void> _fetchReadings() async {
+    setState(() { _loadingReadings = true; _readingsError = null; });
+    try {
+      final res = await ApiService.get('/electricity/readings', params: {
+        'startDate': _formatDate(_startDate),
+        'endDate':   _formatDate(_endDate),
+      });
+      final raw = res.data;
+      setState(() {
+        _readingsData    = raw is List ? raw : (raw['readings'] ?? raw['data'] ?? raw);
+        _loadingReadings = false;
+      });
+    } catch (e) {
+      setState(() { _readingsError = e.toString(); _loadingReadings = false; });
+    }
+  }
+
+  Future<void> _fetchAll() async {
+    await Future.wait([_fetchReport(), _fetchReadings()]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const _SectionHeader(
+          title: 'تقرير استهلاك الكهرباء',
+          color: AppColors.neonGold,
+          icon: Icons.bolt_outlined,
+        ),
+        const SizedBox(height: 12),
+        _DateRangeSelector(
+          startDate: _startDate,
+          endDate:   _endDate,
+          onFetch:   _fetchAll,
+          onStartChanged: (d) => setState(() => _startDate = d),
+          onEndChanged:   (d) => setState(() => _endDate   = d),
+          loading: _loadingReport || _loadingReadings,
+        ),
+        const SizedBox(height: 16),
+        const _SectionHeader(
+          title: 'ملخص الاستهلاك والتكلفة',
+          color: AppColors.neonGold,
+          icon: Icons.electric_bolt_outlined,
+        ),
+        const SizedBox(height: 10),
+        if (_loadingReport)
+          const LoadingWidget()
+        else if (_reportError != null)
+          _buildErrorWidget(_reportError!, _fetchReport)
+        else if (_reportData != null)
+          _buildResponseView(_reportData)
+        else
+          Center(child: Text('اختر نطاقاً زمنياً ثم اضغط بحث',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+        const Divider(color: AppColors.border),
+        const SizedBox(height: 16),
+        const _SectionHeader(
+          title: 'قراءات العدادات التفصيلية',
+          color: AppColors.neonBlue,
+          icon: Icons.speed_outlined,
+        ),
+        const SizedBox(height: 10),
+        if (_loadingReadings)
+          const LoadingWidget()
+        else if (_readingsError != null)
+          _buildErrorWidget(_readingsError!, _fetchReadings)
+        else if (_readingsData != null)
+          _buildResponseView(_readingsData)
+        else
+          Center(child: Text('اختر نطاقاً زمنياً ثم اضغط بحث',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+// ─── Expenses Tab ─────────────────────────────────────────────────────────────
+
+class _ExpensesTab extends StatefulWidget {
+  @override
+  State<_ExpensesTab> createState() => _ExpensesTabState();
+}
+
+class _ExpensesTabState extends State<_ExpensesTab> {
+  late DateTime _startDate;
+  late DateTime _endDate;
+  bool _loading = false;
+  dynamic _data;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _startDate = DateTime(now.year, now.month, 1);
+    _endDate   = now;
+  }
+
+  Future<void> _fetch() async {
+    setState(() { _loading = true; _error = null; });
+    try {
+      final res = await ApiService.get('/expenses', params: {
+        'startDate': _formatDate(_startDate),
+        'endDate':   _formatDate(_endDate),
+      });
+      final raw = res.data;
+      setState(() {
+        _data    = raw is List ? raw : (raw['expenses'] ?? raw['data'] ?? raw);
+        _loading = false;
+      });
+    } catch (e) {
+      setState(() { _error = e.toString(); _loading = false; });
+    }
+  }
+
+  List<_KpiItem> _kpis(dynamic data) {
+    if (data is! List || data.isEmpty) return [];
+    double total = 0;
+    int approved = 0;
+    for (final item in data) {
+      if (item is Map) {
+        total    += (item['amount'] as num? ?? 0).toDouble();
+        if (item['status'] == 'APPROVED' || item['approved'] == true) approved++;
+      }
+    }
+    return [
+      _KpiItem(label: 'إجمالي المصاريف', value: total.toStringAsFixed(0),
+          gradient: AppColors.warningGrad,  icon: Icons.money_off_outlined),
+      _KpiItem(label: 'عدد السجلات',     value: '${data.length}',
+          gradient: AppColors.primaryGrad,  icon: Icons.list_alt_outlined),
+      _KpiItem(label: 'معتمدة',           value: '$approved',
+          gradient: AppColors.successGrad,  icon: Icons.check_circle_outline),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kpis = _kpis(_data);
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const _SectionHeader(
+          title: 'تقرير المصاريف',
+          color: AppColors.neonRed,
+          icon: Icons.money_off_outlined,
+        ),
+        const SizedBox(height: 12),
+        _DateRangeSelector(
+          startDate: _startDate,
+          endDate:   _endDate,
+          onFetch:   _fetch,
+          onStartChanged: (d) => setState(() => _startDate = d),
+          onEndChanged:   (d) => setState(() => _endDate   = d),
+          loading: _loading,
+        ),
+        const SizedBox(height: 16),
+        if (_loading)
+          const LoadingWidget()
+        else if (_error != null)
+          _buildErrorWidget(_error!, _fetch)
+        else if (_data != null) ...[
+          if (kpis.isNotEmpty) ...[
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12,
+              childAspectRatio: 1.4,
+              children: kpis.map((k) => KpiCard(
+                label: k.label, value: k.value,
+                gradient: k.gradient, icon: k.icon,
+              )).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
+          _buildResponseView(_data),
+        ] else
+          Center(child: Text('اختر نطاقاً زمنياً ثم اضغط بحث',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+// ─── Maintenance Tab ──────────────────────────────────────────────────────────
+
+class _MaintenanceTab extends StatefulWidget {
+  @override
+  State<_MaintenanceTab> createState() => _MaintenanceTabState();
+}
+
+class _MaintenanceTabState extends State<_MaintenanceTab> {
+  late DateTime _startDate;
+  late DateTime _endDate;
+  bool _loadingMaint = false;
+  bool _loadingCosts = false;
+  dynamic _maintData;
+  dynamic _costsData;
+  String? _maintError;
+  String? _costsError;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _startDate = DateTime(now.year, now.month, 1);
+    _endDate   = now;
+  }
+
+  Future<void> _fetchMaint() async {
+    setState(() { _loadingMaint = true; _maintError = null; });
+    try {
+      final res = await ApiService.get('/maintenance/all', params: {
+        'startDate': _formatDate(_startDate),
+        'endDate':   _formatDate(_endDate),
+      });
+      final raw = res.data;
+      setState(() {
+        _maintData    = raw is List ? raw : (raw['maintenance'] ?? raw['data'] ?? raw);
+        _loadingMaint = false;
+      });
+    } catch (e) {
+      setState(() { _maintError = e.toString(); _loadingMaint = false; });
+    }
+  }
+
+  Future<void> _fetchCosts() async {
+    setState(() { _loadingCosts = true; _costsError = null; });
+    try {
+      final res = await ApiService.get('/maintenance-costs', params: {
+        'startDate': _formatDate(_startDate),
+        'endDate':   _formatDate(_endDate),
+      });
+      final raw = res.data;
+      setState(() {
+        _costsData    = raw is List ? raw : (raw['costs'] ?? raw['data'] ?? raw);
+        _loadingCosts = false;
+      });
+    } catch (e) {
+      setState(() { _costsError = e.toString(); _loadingCosts = false; });
+    }
+  }
+
+  Future<void> _fetchAll() async {
+    await Future.wait([_fetchMaint(), _fetchCosts()]);
+  }
+
+  List<_KpiItem> _kpis(dynamic costs) {
+    if (costs is! List || costs.isEmpty) return [];
+    double total = 0;
+    for (final item in costs) {
+      if (item is Map) {
+        total += (item['cost'] as num? ?? item['amount'] as num? ?? 0).toDouble();
+      }
+    }
+    return [
+      _KpiItem(label: 'إجمالي تكاليف الصيانة', value: total.toStringAsFixed(0),
+          gradient: AppColors.warningGrad, icon: Icons.receipt_long_outlined),
+      _KpiItem(label: 'عدد سجلات التكاليف',    value: '${costs.length}',
+          gradient: AppColors.primaryGrad, icon: Icons.list_alt_outlined),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kpis = _kpis(_costsData);
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const _SectionHeader(
+          title: 'تقرير الصيانة',
+          color: AppColors.neonOrange,
+          icon: Icons.build_outlined,
+        ),
+        const SizedBox(height: 12),
+        _DateRangeSelector(
+          startDate: _startDate,
+          endDate:   _endDate,
+          onFetch:   _fetchAll,
+          onStartChanged: (d) => setState(() => _startDate = d),
+          onEndChanged:   (d) => setState(() => _endDate   = d),
+          loading: _loadingMaint || _loadingCosts,
+        ),
+        const SizedBox(height: 16),
+        const _SectionHeader(
+          title: 'سجلات أعمال الصيانة',
+          color: AppColors.neonOrange,
+          icon: Icons.handyman_outlined,
+        ),
+        const SizedBox(height: 10),
+        if (_loadingMaint)
+          const LoadingWidget()
+        else if (_maintError != null)
+          _buildErrorWidget(_maintError!, _fetchMaint)
+        else if (_maintData != null)
+          _buildResponseView(_maintData)
+        else
+          Center(child: Text('اختر نطاقاً زمنياً ثم اضغط بحث',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+        const Divider(color: AppColors.border),
+        const SizedBox(height: 16),
+        const _SectionHeader(
+          title: 'تكاليف الصيانة',
+          color: AppColors.neonRed,
+          icon: Icons.receipt_long_outlined,
+        ),
+        const SizedBox(height: 10),
+        if (_loadingCosts)
+          const LoadingWidget()
+        else if (_costsError != null)
+          _buildErrorWidget(_costsError!, _fetchCosts)
+        else if (_costsData != null) ...[
+          if (kpis.isNotEmpty) ...[
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12,
+              childAspectRatio: 1.4,
+              children: kpis.map((k) => KpiCard(
+                label: k.label, value: k.value,
+                gradient: k.gradient, icon: k.icon,
+              )).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
+          _buildResponseView(_costsData),
+        ] else
+          Center(child: Text('اختر نطاقاً زمنياً ثم اضغط بحث',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+// ─── Financial Tab ────────────────────────────────────────────────────────────
+
+class _FinancialTab extends StatefulWidget {
+  @override
+  State<_FinancialTab> createState() => _FinancialTabState();
+}
+
+class _FinancialTabState extends State<_FinancialTab> {
+  bool _loadingCosts   = false;
+  bool _loadingReports = false;
+  bool _loadingBudgets = false;
+  dynamic _costsData;
+  dynamic _reportsData;
+  dynamic _budgetsData;
+  String? _costsError;
+  String? _reportsError;
+  String? _budgetsError;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAll();
+  }
+
+  Future<void> _fetchCostAnalysis() async {
+    setState(() { _loadingCosts = true; _costsError = null; });
+    try {
+      final res = await ApiService.get('/cost-analysis');
+      final raw = res.data;
+      setState(() {
+        _costsData    = raw is List ? raw : (raw['data'] ?? raw['items'] ?? raw);
+        _loadingCosts = false;
+      });
+    } catch (e) {
+      setState(() { _costsError = e.toString(); _loadingCosts = false; });
+    }
+  }
+
+  Future<void> _fetchFinancialReports() async {
+    setState(() { _loadingReports = true; _reportsError = null; });
+    try {
+      final res = await ApiService.get('/financial-reports');
+      final raw = res.data;
+      setState(() {
+        _reportsData   = raw is List ? raw : (raw['reports'] ?? raw['data'] ?? raw);
+        _loadingReports = false;
+      });
+    } catch (e) {
+      setState(() { _reportsError = e.toString(); _loadingReports = false; });
+    }
+  }
+
+  Future<void> _fetchBudgets() async {
+    setState(() { _loadingBudgets = true; _budgetsError = null; });
+    try {
+      final res = await ApiService.get('/budgets');
+      final raw = res.data;
+      setState(() {
+        _budgetsData   = raw is List ? raw : (raw['budgets'] ?? raw['data'] ?? raw);
+        _loadingBudgets = false;
+      });
+    } catch (e) {
+      setState(() { _budgetsError = e.toString(); _loadingBudgets = false; });
+    }
+  }
+
+  Future<void> _fetchAll() async {
+    await Future.wait([_fetchCostAnalysis(), _fetchFinancialReports(), _fetchBudgets()]);
+  }
+
+  Widget _sectionRow(String title, Color color, IconData icon,
+      bool loading, VoidCallback onRefresh) =>
+    Row(
+      textDirection: TextDirection.rtl,
+      children: [
+        _SectionHeader(title: title, color: color, icon: icon),
+        const Spacer(),
+        loading
+            ? SizedBox(width: 20, height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2, color: color))
+            : IconButton(icon: Icon(Icons.refresh, color: color), onPressed: onRefresh),
+      ],
+    );
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        _sectionRow('تحليل التكاليف', AppColors.neonPurple,
+            Icons.pie_chart_outline, _loadingCosts, _fetchCostAnalysis),
+        const SizedBox(height: 10),
+        if (_loadingCosts)
+          const LoadingWidget()
+        else if (_costsError != null)
+          _buildErrorWidget(_costsError!, _fetchCostAnalysis)
+        else if (_costsData != null)
+          _buildResponseView(_costsData)
+        else
+          Center(child: Text('لا توجد بيانات',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+        const Divider(color: AppColors.border),
+        const SizedBox(height: 16),
+        _sectionRow('الميزانيات', AppColors.neonCyan,
+            Icons.account_balance_wallet_outlined, _loadingBudgets, _fetchBudgets),
+        const SizedBox(height: 10),
+        if (_loadingBudgets)
+          const LoadingWidget()
+        else if (_budgetsError != null)
+          _buildErrorWidget(_budgetsError!, _fetchBudgets)
+        else if (_budgetsData != null)
+          _buildResponseView(_budgetsData)
+        else
+          Center(child: Text('لا توجد بيانات',
+              style: AppText.body, textDirection: TextDirection.rtl)),
+        const SizedBox(height: 24),
+        const Divider(color: AppColors.border),
+        const SizedBox(height: 16),
+        _sectionRow('التقارير المالية المحفوظة', AppColors.neonGreen,
+            Icons.assessment_outlined, _loadingReports, _fetchFinancialReports),
+        const SizedBox(height: 10),
+        if (_loadingReports)
+          const LoadingWidget()
+        else if (_reportsError != null)
+          _buildErrorWidget(_reportsError!, _fetchFinancialReports)
+        else if (_reportsData != null)
+          _buildResponseView(_reportsData)
+        else
+          Center(child: Text('لا توجد بيانات',
+              style: AppText.body, textDirection: TextDirection.rtl)),
         const SizedBox(height: 24),
       ],
     );

@@ -35,5 +35,15 @@ class SocketService {
   static void emitStopTyping(String groupId) =>
       _socket?.emit('stop_typing', groupId);
 
+  // Notification real-time events
+  static void onNotification(Function(dynamic) handler) =>
+      _socket?.on('notification:new', handler);
+
+  static void onUnreadCountUpdate(Function(dynamic) handler) =>
+      _socket?.on('notification:unread-count-updated', handler);
+
+  static void offNotification() => _socket?.off('notification:new');
+  static void offUnreadCountUpdate() => _socket?.off('notification:unread-count-updated');
+
   static bool get isConnected => _socket?.connected ?? false;
 }

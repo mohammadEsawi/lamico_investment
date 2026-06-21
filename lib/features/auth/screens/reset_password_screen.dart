@@ -9,7 +9,8 @@ import '../../../core/widgets/glass_input.dart';
 import '../../../core/widgets/gradient_button.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String token;
+  const ResetPasswordScreen({required this.token, super.key});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -25,6 +26,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   void dispose() { _passCtrl.dispose(); _confirmCtrl.dispose(); super.dispose(); }
 
   Future<void> _reset() async {
+    if (widget.token.isEmpty) {
+      setState(() => _error = 'رابط إعادة التعيين غير صحيح أو منتهي الصلاحية');
+      return;
+    }
     if (_passCtrl.text.isEmpty) return;
     if (_passCtrl.text != _confirmCtrl.text) {
       setState(() => _error = 'كلمتا المرور غير متطابقتين');
@@ -32,7 +37,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
     setState(() { _loading = true; _error = null; });
     try {
-      await AuthService.resetPassword('', _passCtrl.text.trim());
+      await AuthService.resetPassword(widget.token, _passCtrl.text.trim());
       if (!mounted) return;
       context.go('/login');
     } catch (e) {

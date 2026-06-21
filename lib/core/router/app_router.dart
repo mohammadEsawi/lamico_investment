@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import '../services/auth_service.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/forgot_password_screen.dart';
@@ -74,14 +75,45 @@ import '../../features/admin/screens/admin_approval_workflows_screen.dart';
 import '../../features/admin/screens/admin_financial_settings_screen.dart';
 import '../../features/engineer/screens/engineer_support_machine_screen.dart';
 
+String _roleHome(String role) {
+  switch (role) {
+    case 'ADMIN':      return '/admin';
+    case 'ENGINEER':   return '/engineer';
+    case 'ACCOUNTANT': return '/accountant';
+    case 'WORKER':     return '/worker';
+    case 'SALES_REP':  return '/sales';
+    default:           return '/login';
+  }
+}
+
 final appRouter = GoRouter(
   initialLocation: '/splash',
+  redirect: (context, state) {
+    final loc = state.matchedLocation;
+    const publicPaths = {
+      '/splash', '/login', '/register', '/forgot-password',
+      '/reset-password', '/verify-email', '/access-request',
+    };
+    if (publicPaths.contains(loc)) return null;
+
+    final user = AuthService.currentUser;
+    if (user == null) return '/login';
+
+    final role = user.role.toUpperCase();
+    if (loc.startsWith('/admin')      && role != 'ADMIN')      return _roleHome(role);
+    if (loc.startsWith('/engineer')   && role != 'ENGINEER')   return _roleHome(role);
+    if (loc.startsWith('/accountant') && role != 'ACCOUNTANT') return _roleHome(role);
+    if (loc.startsWith('/worker')     && role != 'WORKER')     return _roleHome(role);
+    if (loc.startsWith('/sales')      && role != 'SALES_REP')  return _roleHome(role);
+    return null;
+  },
   routes: [
     GoRoute(path: '/splash',          builder: (c, s) => const SplashScreen()),
     GoRoute(path: '/login',           builder: (c, s) => const LoginScreen()),
     GoRoute(path: '/register',        builder: (c, s) => const RegisterScreen()),
     GoRoute(path: '/forgot-password', builder: (c, s) => const ForgotPasswordScreen()),
-    GoRoute(path: '/reset-password',  builder: (c, s) => const ResetPasswordScreen()),
+    GoRoute(path: '/reset-password',  builder: (c, s) => ResetPasswordScreen(
+        token: s.uri.queryParameters['token'] ?? '')),
     GoRoute(path: '/verify-email',    builder: (c, s) => const VerifyEmailScreen()),
     GoRoute(path: '/access-request',  builder: (c, s) => const AccessRequestScreen()),
     GoRoute(path: '/chat',            builder: (c, s) => const ChatScreen()),

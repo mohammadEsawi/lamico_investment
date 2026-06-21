@@ -5,6 +5,7 @@ import '../../../core/services/auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/widgets/ai_app_bar.dart';
+import '../../../core/widgets/notification_bell.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/animated_card.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -81,10 +82,7 @@ class _SalesDashboardScreenState extends State<SalesDashboardScreen> {
               flexibleSpace: AiAppBar(
                 title: 'لوحة المبيعات',
                 actions: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_outlined, color: AppColors.textSecondary),
-                    onPressed: () => context.push('/notifications'),
-                  ),
+                  const NotificationBell(),
                   const SalesMoreMenu(),
                   const SizedBox(width: 4),
                 ],

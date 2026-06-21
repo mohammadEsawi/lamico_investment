@@ -50,4 +50,10 @@ class AuthService {
     await StorageService.clear();
     _currentUser = null;
   }
+
+  // Called by ApiService interceptor on 401 — no API call, safe from recursion
+  static void clearSession() {
+    SocketService.disconnect();
+    _currentUser = null;
+  }
 }

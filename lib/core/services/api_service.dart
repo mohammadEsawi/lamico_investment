@@ -10,6 +10,9 @@ class ApiService {
     headers: {'Content-Type': 'application/json'},
   ));
 
+  // Set this at app startup to handle session expiry
+  static void Function()? onUnauthorized;
+
   static void init() {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
@@ -19,7 +22,11 @@ class ApiService {
         }
         handler.next(options);
       },
-      onError: (error, handler) {
+      onError: (error, handler) async {
+        if (error.response?.statusCode == 401) {
+          await StorageService.clear();
+          onUnauthorized?.call();
+        }
         handler.next(error);
       },
     ));
