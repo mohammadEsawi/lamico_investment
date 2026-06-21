@@ -68,6 +68,7 @@ class SalesMoreMenu extends StatelessWidget {
         }
       },
       itemBuilder: (_) => [
+        _item('/sales/sales', 'المبيعات', Icons.point_of_sale_outlined, AppColors.neonGold),
         _item('/inventory', 'المخزن', Icons.inventory_2_outlined, AppColors.neonCyan),
         _item('/chat', 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan),
         _item('/profile', 'الملف الشخصي', Icons.person_outline, AppColors.neonPurple),

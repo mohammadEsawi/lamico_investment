@@ -63,6 +63,7 @@ class WorkerMoreMenu extends StatelessWidget {
         }
       },
       itemBuilder: (_) => [
+        _item('/worker/payroll', 'راتبي', Icons.payments_outlined, AppColors.neonGreen),
         _item('/inventory', 'المخزن', Icons.inventory_2_outlined, AppColors.neonCyan),
         _item('/chat', 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan),
         _item('/profile', 'الملف الشخصي', Icons.person_outline, AppColors.textSecondary),
