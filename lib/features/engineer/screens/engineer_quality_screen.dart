@@ -33,6 +33,105 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
     } catch (_) { setState(() => _loading = false); }
   }
 
+  void _showResolve(Map<String, dynamic> q) {
+    final resolutionCtrl = TextEditingController();
+    final notesCtrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.bgCard,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+            left: 16, right: 16, top: 16,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 16),
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('حل المشكلة', style: AppText.h3),
+            const SizedBox(height: 4),
+            Text(q['title'] ?? q['machine']?['name'] ?? 'فحص جودة',
+                style: AppText.caption, textDirection: TextDirection.rtl),
+            const SizedBox(height: 12),
+            TextField(
+              controller: resolutionCtrl,
+              maxLines: 2,
+              textDirection: TextDirection.rtl,
+              decoration: InputDecoration(
+                labelText: 'الحل المتخذ',
+                filled: true, fillColor: AppColors.bg,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: notesCtrl,
+              maxLines: 2,
+              textDirection: TextDirection.rtl,
+              decoration: InputDecoration(
+                labelText: 'ملاحظات',
+                filled: true, fillColor: AppColors.bg,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.neonGreen,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  try {
+                    await ApiService.patch('/quality-checks/${q['id']}/resolve', data: {
+                      'resolution': resolutionCtrl.text.trim(),
+                      if (notesCtrl.text.isNotEmpty) 'notes': notesCtrl.text.trim(),
+                    });
+                    _load();
+                  } catch (_) {}
+                },
+                child: const Text('تأكيد الحل',
+                    style: TextStyle(color: Colors.white, fontFamily: 'Cairo')),
+              ),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _delete(Map<String, dynamic> q) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          backgroundColor: AppColors.bgCard,
+          title: const Text('حذف فحص الجودة'),
+          content: const Text('هل تريد حذف هذا الفحص نهائياً؟'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('إلغاء')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('حذف', style: TextStyle(color: AppColors.neonRed)),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed == true) {
+      try {
+        await ApiService.delete('/quality-checks/${q['id']}');
+        _load();
+      } catch (_) {}
+    }
+  }
+
   void _showAdd() {
     final notesCtrl = TextEditingController();
     showModalBottomSheet(
@@ -121,39 +220,82 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
                           itemBuilder: (_, i) {
                             final q = _items[i];
                             final passed = q['passed'] as bool? ?? true;
+                            final resolved = q['resolvedAt'] != null || q['isResolved'] == true;
                             return GlassCard(
-                              child: Row(
-                                textDirection: TextDirection.rtl,
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: (passed ? AppColors.neonGreen : AppColors.neonRed)
-                                          .withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      passed ? Icons.check_circle_outline : Icons.cancel_outlined,
-                                      color: passed ? AppColors.neonGreen : AppColors.neonRed,
-                                    ),
+                                  Row(
+                                    textDirection: TextDirection.rtl,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: (passed ? AppColors.neonGreen : AppColors.neonRed)
+                                              .withValues(alpha: 0.15),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Icon(
+                                          passed ? Icons.check_circle_outline : Icons.cancel_outlined,
+                                          color: passed ? AppColors.neonGreen : AppColors.neonRed,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(q['title'] ?? q['machine']?['name'] ?? 'فحص جودة',
+                                                style: AppText.h3,
+                                                textDirection: TextDirection.rtl),
+                                            Text(q['notes'] ?? q['date'] ?? '--',
+                                                style: AppText.caption,
+                                                textDirection: TextDirection.rtl),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(passed ? 'ناجح' : 'فاشل',
+                                          style: AppText.label.copyWith(
+                                              color: passed ? AppColors.neonGreen : AppColors.neonRed)),
+                                      const SizedBox(width: 4),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete_outline,
+                                            color: AppColors.neonRed, size: 18),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onPressed: () => _delete(q as Map<String, dynamic>),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(q['title'] ?? q['machine']?['name'] ?? 'فحص جودة',
-                                            style: AppText.h3,
-                                            textDirection: TextDirection.rtl),
-                                        Text(q['notes'] ?? q['date'] ?? '--',
-                                            style: AppText.caption,
-                                            textDirection: TextDirection.rtl),
-                                      ],
+                                  if (!passed && !resolved)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: OutlinedButton(
+                                          onPressed: () => _showResolve(q as Map<String, dynamic>),
+                                          style: OutlinedButton.styleFrom(
+                                              foregroundColor: AppColors.neonGreen),
+                                          child: const Text('حل المشكلة',
+                                              style: TextStyle(fontFamily: 'Cairo')),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  Text(passed ? 'ناجح' : 'فاشل',
-                                      style: AppText.label.copyWith(
-                                          color: passed ? AppColors.neonGreen : AppColors.neonRed)),
+                                  if (resolved)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.neonGreen.withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        child: Text('تم الحل',
+                                            style: AppText.label.copyWith(color: AppColors.neonGreen)),
+                                      ),
+                                    ),
                                 ],
                               ),
                             );

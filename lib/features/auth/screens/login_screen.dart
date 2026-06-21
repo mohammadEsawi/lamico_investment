@@ -45,7 +45,17 @@ class _LoginScreenState extends State<LoginScreen> {
         default:           setState(() => _error = 'دور غير معروف');
       }
     } catch (e) {
-      setState(() => _error = 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      final msg = e.toString();
+      if (msg.contains('403') || msg.contains('verify')) {
+        setState(() => _error = 'يرجى تأكيد البريد الإلكتروني أولاً');
+      } else if (msg.contains('401') || msg.contains('invalid')) {
+        setState(() => _error = 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      } else if (msg.contains('SocketException') || msg.contains('connection') ||
+                 msg.contains('Failed host') || msg.contains('Connection refused')) {
+        setState(() => _error = 'لا يوجد اتصال بالسيرفر — تأكد أن الباكند شغّال وأن IP صحيح');
+      } else {
+        setState(() => _error = 'خطأ: $msg');
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }

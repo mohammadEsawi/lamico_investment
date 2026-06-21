@@ -52,8 +52,8 @@ class WorkerMoreMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
-      color: AppColors.bgCard,
+      icon: const Icon(Icons.more_vert, color: Colors.white),
+      color: Theme.of(context).cardColor,
       onSelected: (route) async {
         if (route == '/logout') {
           await AuthService.logout();
@@ -63,6 +63,7 @@ class WorkerMoreMenu extends StatelessWidget {
         }
       },
       itemBuilder: (_) => [
+        _item('/inventory', 'المخزن', Icons.inventory_2_outlined, AppColors.neonCyan),
         _item('/chat', 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan),
         _item('/profile', 'الملف الشخصي', Icons.person_outline, AppColors.textSecondary),
         _item('/logout', 'تسجيل الخروج', Icons.logout, AppColors.neonRed),

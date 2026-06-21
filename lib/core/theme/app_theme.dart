@@ -50,14 +50,14 @@ const darkPalette = Palette(
 // ── Light Palette ─────────────────────────────────────────────────────────────
 
 const lightPalette = Palette(
-  bg         : Color(0xFFF1F5F9),
-  bgCard     : Color(0xFFFFFFFF),
+  bg         : Color(0xFFFFFFFF),
+  bgCard     : Color(0xFFF8FAFC),
   bgSurface  : Color(0xFFE2E8F0),
-  bgGlass    : Color(0x0A000000),
+  bgGlass    : Color(0x06000000),
   textPrimary  : Color(0xFF0F172A),
   textSecondary: Color(0xFF475569),
   textMuted    : Color(0xFF94A3B8),
-  border       : Color(0x18000000),
+  border       : Color(0x14000000),
   brightness   : Brightness.light,
 );
 
@@ -116,19 +116,31 @@ class AppTheme {
       surface       : p.bgCard,
       onSurface     : p.textPrimary,
     ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: p.bgCard,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Accent.blue,
       elevation: 0,
-      foregroundColor: p.textPrimary,
+      foregroundColor: Colors.white,
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: p.bgCard,
-      indicatorColor: Accent.purple.withValues(alpha: 0.2),
+      backgroundColor: Colors.black,
+      indicatorColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
-      labelTextStyle: WidgetStateProperty.all(
-        TextStyle(fontFamily: 'Cairo', fontSize: 11,
-            color: p.textSecondary, fontWeight: FontWeight.w500),
-      ),
+      shadowColor: Colors.transparent,
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        final selected = states.contains(WidgetState.selected);
+        return IconThemeData(
+          color: selected ? Accent.orange : const Color(0xFF9CA3AF),
+        );
+      }),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        final selected = states.contains(WidgetState.selected);
+        return TextStyle(
+          fontFamily: 'Cairo',
+          fontSize: 11,
+          color: selected ? Accent.orange : const Color(0xFF9CA3AF),
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+        );
+      }),
     ),
     dividerColor: p.border,
     useMaterial3: true,

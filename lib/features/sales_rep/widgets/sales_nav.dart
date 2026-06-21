@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text.dart';
 import '../../../core/services/auth_service.dart';
 
 class SalesNav extends StatelessWidget {
@@ -24,27 +23,27 @@ class SalesNav extends StatelessWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home, color: AppColors.neonGold),
+          selectedIcon: Icon(Icons.home, color: AppColors.neonOrange),
           label: 'الرئيسية',
         ),
         NavigationDestination(
           icon: Icon(Icons.people_outline),
-          selectedIcon: Icon(Icons.people, color: AppColors.neonGold),
+          selectedIcon: Icon(Icons.people, color: AppColors.neonOrange),
           label: 'العملاء',
         ),
         NavigationDestination(
           icon: Icon(Icons.request_quote_outlined),
-          selectedIcon: Icon(Icons.request_quote, color: AppColors.neonGold),
+          selectedIcon: Icon(Icons.request_quote, color: AppColors.neonOrange),
           label: 'العروض',
         ),
         NavigationDestination(
           icon: Icon(Icons.directions_car_outlined),
-          selectedIcon: Icon(Icons.directions_car, color: AppColors.neonGold),
+          selectedIcon: Icon(Icons.directions_car, color: AppColors.neonOrange),
           label: 'الزيارات',
         ),
         NavigationDestination(
           icon: Icon(Icons.flag_outlined),
-          selectedIcon: Icon(Icons.flag, color: AppColors.neonGold),
+          selectedIcon: Icon(Icons.flag, color: AppColors.neonOrange),
           label: 'الأهداف',
         ),
       ],
@@ -58,8 +57,8 @@ class SalesMoreMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
-      color: AppColors.bgCard,
+      icon: const Icon(Icons.more_vert, color: Colors.white),
+      color: Theme.of(context).cardColor,
       onSelected: (route) async {
         if (route == '/logout') {
           await AuthService.logout();
@@ -69,8 +68,9 @@ class SalesMoreMenu extends StatelessWidget {
         }
       },
       itemBuilder: (_) => [
+        _item('/inventory', 'المخزن', Icons.inventory_2_outlined, AppColors.neonCyan),
         _item('/chat', 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan),
-        _item('/profile', 'الملف الشخصي', Icons.person_outline, AppColors.textSecondary),
+        _item('/profile', 'الملف الشخصي', Icons.person_outline, AppColors.neonPurple),
         _item('/logout', 'تسجيل الخروج', Icons.logout, AppColors.neonRed),
       ],
     );
@@ -84,7 +84,7 @@ class SalesMoreMenu extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 18),
             const SizedBox(width: 8),
-            Text(label, style: AppText.body.copyWith(color: AppColors.textPrimary)),
+            Text(label, style: const TextStyle(fontFamily: 'Cairo')),
           ],
         ),
       );

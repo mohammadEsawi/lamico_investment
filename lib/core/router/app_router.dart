@@ -27,6 +27,8 @@ import '../../features/engineer/screens/engineer_machines_screen.dart';
 import '../../features/engineer/screens/engineer_spare_parts_screen.dart';
 import '../../features/engineer/screens/engineer_inventory_screen.dart';
 import '../../features/engineer/screens/engineer_documents_screen.dart';
+import '../../features/engineer/screens/engineer_electricity_screen.dart';
+import '../../features/engineer/screens/engineer_production_screen.dart';
 import '../../features/accountant/screens/accountant_dashboard_screen.dart';
 import '../../features/accountant/screens/accountant_invoices_screen.dart';
 import '../../features/accountant/screens/accountant_receivables_screen.dart';
@@ -41,11 +43,26 @@ import '../../features/worker/screens/worker_attendance_screen.dart';
 import '../../features/worker/screens/worker_tools_screen.dart';
 import '../../features/worker/screens/worker_electricity_screen.dart';
 import '../../features/admin/screens/admin_production_screen.dart';
+import '../../features/admin/screens/admin_reports_screen.dart';
+import '../../features/admin/screens/admin_electricity_screen.dart';
+import '../../features/admin/screens/admin_performance_screen.dart';
+import '../../features/admin/screens/admin_ai_screen.dart';
+import '../../features/admin/screens/admin_maintenance_screen.dart';
+import '../../features/admin/screens/admin_machine_health_screen.dart';
+import '../../features/admin/screens/admin_maintenance_costs_screen.dart';
+import '../../features/admin/screens/admin_spare_parts_screen.dart';
+import '../../features/engineer/screens/engineer_maintenance_schedule_screen.dart';
+import '../../features/engineer/screens/engineer_machine_health_screen.dart';
+import '../../features/engineer/screens/engineer_maintenance_costs_screen.dart';
+import '../../features/engineer/screens/engineer_spare_part_requests_screen.dart';
+import '../../features/engineer/screens/engineer_raw_material_alerts_screen.dart';
+import '../../features/engineer/screens/engineer_attendance_screen.dart';
 import '../../features/sales_rep/screens/sales_dashboard_screen.dart';
 import '../../features/sales_rep/screens/sales_customers_screen.dart';
 import '../../features/sales_rep/screens/sales_quotations_screen.dart';
 import '../../features/sales_rep/screens/sales_visits_screen.dart';
 import '../../features/sales_rep/screens/sales_targets_screen.dart';
+import '../../features/shared/screens/inventory_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
@@ -73,6 +90,21 @@ final appRouter = GoRouter(
     GoRoute(path: '/admin/requests',  builder: (c, s) => const AdminRegistrationRequestsScreen()),
     GoRoute(path: '/admin/workers',    builder: (c, s) => const AdminWorkerOverviewScreen()),
     GoRoute(path: '/admin/production', builder: (c, s) => const AdminProductionScreen()),
+    GoRoute(path: '/admin/reports',            builder: (c, s) => const AdminReportsScreen()),
+    GoRoute(path: '/admin/electricity',        builder: (c, s) => const AdminElectricityScreen()),
+    GoRoute(path: '/admin/performance',        builder: (c, s) => const AdminPerformanceScreen()),
+    GoRoute(path: '/admin/ai',                 builder: (c, s) => const AdminAiScreen()),
+    GoRoute(path: '/admin/maintenance',        builder: (c, s) => const AdminMaintenanceScreen()),
+    GoRoute(path: '/admin/machine-health',     builder: (c, s) => const AdminMachineHealthScreen()),
+    GoRoute(path: '/admin/maintenance-costs',  builder: (c, s) => const AdminMaintenanceCostsScreen()),
+    GoRoute(path: '/admin/spare-parts',        builder: (c, s) => const AdminSparePartsScreen()),
+    // Engineer (new)
+    GoRoute(path: '/engineer/maintenance-schedule', builder: (c, s) => const EngineerMaintenanceScheduleScreen()),
+    GoRoute(path: '/engineer/machine-health',       builder: (c, s) => const EngineerMachineHealthScreen()),
+    GoRoute(path: '/engineer/maintenance-costs',    builder: (c, s) => const EngineerMaintenanceCostsScreen()),
+    GoRoute(path: '/engineer/spare-part-requests',  builder: (c, s) => const EngineerSparePartRequestsScreen()),
+    GoRoute(path: '/engineer/raw-material-alerts',  builder: (c, s) => const EngineerRawMaterialAlertsScreen()),
+    GoRoute(path: '/engineer/attendance',           builder: (c, s) => const EngineerAttendanceScreen()),
     // Engineer
     GoRoute(path: '/engineer',             builder: (c, s) => const EngineerDashboardScreen()),
     GoRoute(path: '/engineer/maintenance', builder: (c, s) => const EngineerMaintenanceScreen()),
@@ -80,7 +112,9 @@ final appRouter = GoRouter(
     GoRoute(path: '/engineer/machines',    builder: (c, s) => const EngineerMachinesScreen()),
     GoRoute(path: '/engineer/spare-parts', builder: (c, s) => const EngineerSparePartsScreen()),
     GoRoute(path: '/engineer/inventory',   builder: (c, s) => const EngineerInventoryScreen()),
-    GoRoute(path: '/engineer/documents',   builder: (c, s) => const EngineerDocumentsScreen()),
+    GoRoute(path: '/engineer/documents',    builder: (c, s) => const EngineerDocumentsScreen()),
+    GoRoute(path: '/engineer/electricity', builder: (c, s) => const EngineerElectricityScreen()),
+    GoRoute(path: '/engineer/production',  builder: (c, s) => const EngineerProductionScreen()),
     // Accountant
     GoRoute(path: '/accountant',              builder: (c, s) => const AccountantDashboardScreen()),
     GoRoute(path: '/accountant/invoices',     builder: (c, s) => const AccountantInvoicesScreen()),
@@ -96,6 +130,8 @@ final appRouter = GoRouter(
     GoRoute(path: '/worker/attendance',  builder: (c, s) => const WorkerAttendanceScreen()),
     GoRoute(path: '/worker/tools',        builder: (c, s) => const WorkerToolsScreen()),
     GoRoute(path: '/worker/electricity',  builder: (c, s) => const WorkerElectricityScreen()),
+    // Shared
+    GoRoute(path: '/inventory',        builder: (c, s) => const InventoryScreen()),
     // Sales Rep
     GoRoute(path: '/sales',            builder: (c, s) => const SalesDashboardScreen()),
     GoRoute(path: '/sales/customers',  builder: (c, s) => const SalesCustomersScreen()),

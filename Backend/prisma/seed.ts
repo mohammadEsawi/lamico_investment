@@ -150,6 +150,24 @@ async function seedProductionSettings() {
   }
 }
 
+async function seedRawMaterials() {
+  const materials = [
+    { name: 'راتنج HDPE',         unit: 'كيلوغرام',  currentQuantity: 500,  minQuantity: 100 },
+    { name: 'راتنج LDPE',         unit: 'كيلوغرام',  currentQuantity: 300,  minQuantity: 80  },
+    { name: 'راتنج PET',          unit: 'كيلوغرام',  currentQuantity: 600,  minQuantity: 150 },
+    { name: 'كراتين تعبئة',       unit: 'كرتونة',    currentQuantity: 1000, minQuantity: 200 },
+    { name: 'ماستر باتش ألوان',  unit: 'كيلوغرام',  currentQuantity: 50,   minQuantity: 20  },
+    { name: 'لاصق',               unit: 'كيلوغرام',  currentQuantity: 30,   minQuantity: 10  },
+  ];
+  for (const m of materials) {
+    const existing = await prisma.rawMaterial.findFirst({ where: { name: m.name } });
+    if (!existing) {
+      await prisma.rawMaterial.create({ data: m });
+    }
+    console.log(`RawMaterial: ${m.name}`);
+  }
+}
+
 async function seedElectricityPrice() {
   const existing = await prisma.electricityKwhPrice.findFirst();
   if (!existing) {
@@ -175,6 +193,7 @@ async function main() {
   await seedUsers();
   await seedMachines();
   await seedProductionSettings();
+  await seedRawMaterials();
   await seedElectricityPrice();
   console.log("\n✅ Done.");
   console.log(`Password for all accounts: ${DEFAULT_PASSWORD}\n`);

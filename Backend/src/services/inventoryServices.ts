@@ -19,6 +19,7 @@ type CreateInventoryTransactionPayload = {
   quantity?: number;
   referenceType?: ReferenceType;
   referenceId?: number;
+  notes?: string;
 };
 
 export const createInventoryTransaction = async (
@@ -184,4 +185,64 @@ export const getRawMaterialsStock = async (): Promise<
   });
 
   return { status: 200, data: materials };
+};
+
+export const createRawMaterial = async (
+  payload: { name?: string; unit?: string; currentQuantity?: number; minQuantity?: number }
+): Promise<ServiceResult<unknown>> => {
+  const name = payload.name?.trim();
+  const unit = payload.unit?.trim();
+  const currentQuantity = Number(payload.currentQuantity ?? 0);
+  const minQuantity = Number(payload.minQuantity ?? 0);
+
+  if (!name) return { status: 400, message: 'name is required' };
+  if (!unit) return { status: 400, message: 'unit is required' };
+  if (!Number.isFinite(currentQuantity) || currentQuantity < 0) return { status: 400, message: 'currentQuantity must be >= 0' };
+
+  const existing = await prisma.rawMaterial.findFirst({ where: { name } });
+  if (existing) return { status: 409, message: 'Material with this name already exists' };
+
+  const material = await prisma.rawMaterial.create({
+    data: { name, unit, currentQuantity, minQuantity },
+  });
+  return { status: 201, data: material };
+};
+
+export const updateRawMaterial = async (
+  id: number,
+  payload: { name?: string; unit?: string; minQuantity?: number; currentQuantity?: number }
+): Promise<ServiceResult<unknown>> => {
+  const material = await prisma.rawMaterial.findUnique({ where: { id } });
+  if (!material) return { status: 404, message: 'Material not found' };
+
+  const updated = await prisma.rawMaterial.update({
+    where: { id },
+    data: {
+      ...(payload.name?.trim() ? { name: payload.name.trim() } : {}),
+      ...(payload.unit?.trim() ? { unit: payload.unit.trim() } : {}),
+      ...(payload.minQuantity !== undefined ? { minQuantity: Number(payload.minQuantity) } : {}),
+      ...(payload.currentQuantity !== undefined ? { currentQuantity: Number(payload.currentQuantity) } : {}),
+    },
+  });
+  return { status: 200, data: updated };
+};
+
+export const deleteRawMaterial = async (id: number): Promise<ServiceResult<unknown>> => {
+  const material = await prisma.rawMaterial.findUnique({ where: { id } });
+  if (!material) return { status: 404, message: 'Material not found' };
+
+  await prisma.rawMaterial.delete({ where: { id } });
+  return { status: 200, data: { message: 'Deleted' } };
+};
+
+export const getMaterialTransactions = async (materialId: number): Promise<ServiceResult<unknown>> => {
+  const records = await prisma.inventoryTransaction.findMany({
+    where: { materialId },
+    include: {
+      createdBy: { select: { id: true, fullName: true, role: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 50,
+  });
+  return { status: 200, data: records };
 };

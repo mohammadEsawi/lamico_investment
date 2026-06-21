@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/services/auth_service.dart';
 
 class AccountantNav extends StatelessWidget {
@@ -23,22 +24,22 @@ class AccountantNav extends StatelessWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home, color: AppColors.neonGreen),
+          selectedIcon: Icon(Icons.home, color: AppColors.neonOrange),
           label: 'الرئيسية',
         ),
         NavigationDestination(
           icon: Icon(Icons.receipt_long_outlined),
-          selectedIcon: Icon(Icons.receipt_long, color: AppColors.neonGreen),
+          selectedIcon: Icon(Icons.receipt_long, color: AppColors.neonOrange),
           label: 'الفواتير',
         ),
         NavigationDestination(
           icon: Icon(Icons.bar_chart_outlined),
-          selectedIcon: Icon(Icons.bar_chart, color: AppColors.neonGreen),
+          selectedIcon: Icon(Icons.bar_chart, color: AppColors.neonOrange),
           label: 'التقارير',
         ),
         NavigationDestination(
           icon: Icon(Icons.more_horiz),
-          selectedIcon: Icon(Icons.more_horiz, color: AppColors.neonGreen),
+          selectedIcon: Icon(Icons.more_horiz, color: AppColors.neonOrange),
           label: 'المزيد',
         ),
       ],
@@ -46,9 +47,10 @@ class AccountantNav extends StatelessWidget {
   }
 
   void _showMore(BuildContext context) {
+    final c = context.colors;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: c.bgCard,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Directionality(
@@ -57,13 +59,14 @@ class AccountantNav extends StatelessWidget {
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 8),
           children: [
+            _tile(context, 'المخزن', Icons.inventory_2_outlined, AppColors.neonCyan, '/inventory'),
             _tile(context, 'مستحقات العملاء', Icons.people_outline, AppColors.neonCyan, '/accountant/receivables'),
             _tile(context, 'مستحقات الموردين', Icons.business_outlined, AppColors.neonOrange, '/accountant/payables'),
             _tile(context, 'الموردون', Icons.store_outlined, AppColors.neonGold, '/accountant/suppliers'),
             _tile(context, 'المصروفات', Icons.money_off_outlined, AppColors.neonRed, '/accountant/expenses'),
             _tile(context, 'خطة الميزانية', Icons.account_balance_outlined, AppColors.neonPurple, '/accountant/budget'),
             _tile(context, 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan, '/chat'),
-            _tile(context, 'الملف الشخصي', Icons.person_outline, AppColors.textSecondary, '/profile'),
+            _tile(context, 'الملف الشخصي', Icons.person_outline, c.textSecondary, '/profile'),
             ListTile(
               leading: const Icon(Icons.logout, color: AppColors.neonRed),
               title: Text('تسجيل الخروج',
@@ -81,9 +84,10 @@ class AccountantNav extends StatelessWidget {
   }
 
   Widget _tile(BuildContext ctx, String label, IconData icon, Color color, String route) {
+    final c = ctx.colors;
     return ListTile(
       leading: Icon(icon, color: color),
-      title: Text(label, style: AppText.body.copyWith(color: AppColors.textPrimary)),
+      title: Text(label, style: AppText.body.copyWith(color: c.textPrimary)),
       onTap: () { Navigator.pop(ctx); ctx.go(route); },
     );
   }

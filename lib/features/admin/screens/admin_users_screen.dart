@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
@@ -67,6 +67,74 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     }
   }
 
+  Future<void> _changeRole(String id, String currentRole) async {
+    String selectedRole = currentRole;
+    final messenger = ScaffoldMessenger.of(context);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setStateDialog) => Directionality(
+            textDirection: TextDirection.rtl,
+            child: AlertDialog(
+              backgroundColor: AppColors.bgCard,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: const Text('تغيير دور المستخدم', style: AppText.h3),
+              content: DropdownButton<String>(
+                value: selectedRole,
+                isExpanded: true,
+                dropdownColor: AppColors.bgCard,
+                style: AppText.body.copyWith(color: AppColors.textPrimary),
+                items: const [
+                  DropdownMenuItem(value: 'ADMIN',      child: Text('مدير')),
+                  DropdownMenuItem(value: 'ENGINEER',   child: Text('مهندس')),
+                  DropdownMenuItem(value: 'ACCOUNTANT', child: Text('محاسب')),
+                  DropdownMenuItem(value: 'WORKER',     child: Text('عامل')),
+                  DropdownMenuItem(value: 'SALES_REP',  child: Text('مندوب مبيعات')),
+                ],
+                onChanged: (v) {
+                  if (v != null) setStateDialog(() => selectedRole = v);
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: Text('إلغاء',
+                      style: AppText.body.copyWith(color: AppColors.textSecondary)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.neonPurple,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text('تأكيد',
+                      style: TextStyle(fontFamily: 'Cairo')),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (confirm == true) {
+      try {
+        await ApiService.put('/users/$id/role', data: {'role': selectedRole});
+        _load();
+      } catch (_) {
+        if (mounted) {
+          messenger.showSnackBar(const SnackBar(
+            content: Text('فشل تغيير الدور',
+                textDirection: TextDirection.rtl),
+            backgroundColor: AppColors.neonRed,
+          ));
+        }
+      }
+    }
+  }
+
   Color _roleColor(String role) {
     switch (role) {
       case 'ADMIN':      return AppColors.neonPurple;
@@ -107,7 +175,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                         child: ListView.separated(
                           padding: const EdgeInsets.all(16),
                           itemCount: _users.length,
-                          separatorBuilder: (_, _) => const SizedBox(height: 12),
+                          separatorBuilder: (_, __) => const SizedBox(height: 12),
                           itemBuilder: (_, i) {
                             final u = _users[i];
                             final role = u['role'] ?? '';
@@ -160,10 +228,24 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                         onChanged: (v) => _toggleActive(u['id'] ?? '', isActive),
                                         activeThumbColor: AppColors.neonGreen,
                                       ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete_outline,
-                                            color: AppColors.neonRed, size: 20),
-                                        onPressed: () => _deleteUser(u['id'] ?? ''),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                                Icons.manage_accounts_outlined,
+                                                color: AppColors.neonPurple,
+                                                size: 20),
+                                            onPressed: () => _changeRole(
+                                                u['id'] ?? '', role),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete_outline,
+                                                color: AppColors.neonRed, size: 20),
+                                            onPressed: () =>
+                                                _deleteUser(u['id'] ?? ''),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
