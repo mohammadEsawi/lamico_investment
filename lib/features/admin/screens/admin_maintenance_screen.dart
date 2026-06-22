@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import '../../../core/services/api_service.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/widgets/ai_app_bar.dart';
@@ -58,6 +59,7 @@ class _AdminMaintenanceScreenState extends State<AdminMaintenanceScreen>
       final data = res.data;
       setState(() {
         _records = data is List ? data : (data['maintenance'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_records);
         _loadingRecords = false;
       });
     } catch (_) {
@@ -715,6 +717,7 @@ class _AdminMaintenanceScreenState extends State<AdminMaintenanceScreen>
                             AppColors.neonCyan),
                       if (cost != null)
                         _badge('التكلفة: $cost ر.س', AppColors.neonGold),
+                      _badge(AppDate.format(r['createdAt']), AppColors.textSecondary),
                     ],
                   ),
                 ],

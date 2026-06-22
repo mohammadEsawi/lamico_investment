@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../core/utils/responsive.dart';
 
 class SalesNav extends StatelessWidget {
   final int selectedIndex;
@@ -9,6 +10,7 @@ class SalesNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Responsive.isDesktop(context)) return const SizedBox.shrink();
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: (i) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -30,6 +31,7 @@ class _EngineerRawMaterialAlertsScreenState
       final data = res.data;
       setState(() {
         _materials = data is List ? data : (data['materials'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_materials, field: 'updatedAt');
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -268,6 +270,12 @@ class _EngineerRawMaterialAlertsScreenState
                                       ),
                                     ],
                                   ),
+                                  if (m['updatedAt'] != null || m['createdAt'] != null)
+                                    Text(
+                                      AppDate.format(m['updatedAt'] ?? m['createdAt']),
+                                      style: AppText.label.copyWith(color: AppColors.textSecondary),
+                                      textDirection: TextDirection.rtl,
+                                    ),
                                 ],
                               ),
                             );

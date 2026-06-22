@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../core/utils/responsive.dart';
 
 class AdminNav extends StatelessWidget {
   final int selectedIndex;
@@ -11,6 +12,7 @@ class AdminNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Responsive.isDesktop(context)) return const SizedBox.shrink();
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: (i) {

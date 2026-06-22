@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -28,6 +29,7 @@ class _AccountantExpensesScreenState extends State<AccountantExpensesScreen> {
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['expenses'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_items, field: 'submittedAt');
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -223,8 +225,8 @@ class _AccountantExpensesScreenState extends State<AccountantExpensesScreen> {
                                               style: AppText.h3, textDirection: TextDirection.rtl),
                                           Text(e['category'] ?? e['type'] ?? '--',
                                               style: AppText.caption, textDirection: TextDirection.rtl),
-                                          Text(e['date']?.toString().substring(0, 10) ?? '--',
-                                              style: AppText.label),
+                                          Text(AppDate.format(e['submittedAt'] ?? e['date']),
+                                              style: AppText.label, textDirection: TextDirection.rtl),
                                         ],
                                       ),
                                     ),

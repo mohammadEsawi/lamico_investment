@@ -12,6 +12,8 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/kpi_card.dart';
 import '../../../core/widgets/loading_widget.dart';
 import '../widgets/worker_nav.dart';
+import '../../../core/utils/responsive.dart';
+import '../../../core/widgets/desktop_sidebar.dart';
 
 class WorkerDashboardScreen extends StatefulWidget {
   const WorkerDashboardScreen({super.key});
@@ -39,7 +41,9 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       bottomNavigationBar: const WorkerNav(selectedIndex: 0),
-      body: AiBackground(
+      body: Row(children: [
+        if (Responsive.isDesktop(context)) const DesktopSidebar(role: 'WORKER'),
+        Expanded(child: AiBackground(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -174,7 +178,8 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
             ),
           ],
         ),
-      ),
+      )),
+    ]),
     );
   }
 }

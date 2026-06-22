@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import '../../../core/services/api_service.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/widgets/ai_app_bar.dart';
@@ -54,6 +55,7 @@ class _AdminAttendanceScreenState extends State<AdminAttendanceScreen>
       final data = res.data;
       setState(() {
         _records = data is List ? data : (data['attendance'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_records, field: 'checkIn');
         _loadingRecords = false;
       });
     } catch (_) {
@@ -545,7 +547,7 @@ class _AdminAttendanceScreenState extends State<AdminAttendanceScreen>
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: visible.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, i) => const SizedBox(height: 10),
         itemBuilder: (_, i) {
           final a = visible[i];
           final user = a['user'];
@@ -648,6 +650,10 @@ class _AdminAttendanceScreenState extends State<AdminAttendanceScreen>
                   const SizedBox(height: 10),
                   const Divider(color: AppColors.border, height: 1),
                   const SizedBox(height: 10),
+                  Text(AppDate.format(checkIn),
+                      style: AppText.label.copyWith(color: AppColors.textSecondary),
+                      textDirection: TextDirection.rtl),
+                  const SizedBox(height: 6),
                   Row(
                     textDirection: TextDirection.rtl,
                     children: [

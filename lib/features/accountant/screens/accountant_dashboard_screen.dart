@@ -12,6 +12,8 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/kpi_card.dart';
 import '../../../core/widgets/loading_widget.dart';
 import '../widgets/accountant_nav.dart';
+import '../../../core/utils/responsive.dart';
+import '../../../core/widgets/desktop_sidebar.dart';
 
 class AccountantDashboardScreen extends StatefulWidget {
   const AccountantDashboardScreen({super.key});
@@ -39,7 +41,9 @@ class _AccountantDashboardScreenState extends State<AccountantDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       bottomNavigationBar: const AccountantNav(selectedIndex: 0),
-      body: AiBackground(
+      body: Row(children: [
+        if (Responsive.isDesktop(context)) const DesktopSidebar(role: 'ACCOUNTANT'),
+        Expanded(child: AiBackground(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -154,7 +158,8 @@ class _AccountantDashboardScreenState extends State<AccountantDashboardScreen> {
             ),
           ],
         ),
-      ),
+      )),
+    ]),
     );
   }
 

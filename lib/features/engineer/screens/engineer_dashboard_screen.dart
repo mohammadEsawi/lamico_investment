@@ -12,6 +12,8 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/kpi_card.dart';
 import '../../../core/widgets/loading_widget.dart';
 import '../widgets/engineer_nav.dart';
+import '../../../core/utils/responsive.dart';
+import '../../../core/widgets/desktop_sidebar.dart';
 
 class EngineerDashboardScreen extends StatefulWidget {
   const EngineerDashboardScreen({super.key});
@@ -108,7 +110,9 @@ class _EngineerDashboardScreenState extends State<EngineerDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       bottomNavigationBar: const EngineerNav(selectedIndex: 0),
-      body: AiBackground(
+      body: Row(children: [
+        if (Responsive.isDesktop(context)) const DesktopSidebar(role: 'ENGINEER'),
+        Expanded(child: AiBackground(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -344,7 +348,8 @@ class _EngineerDashboardScreenState extends State<EngineerDashboardScreen> {
             ),
           ],
         ),
-      ),
+      )),
+    ]),
     );
   }
 

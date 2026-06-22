@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/widgets/ai_app_bar.dart';
@@ -46,8 +47,10 @@ class _AdminProductionScreenState extends State<AdminProductionScreen>
         _overview    = results[0].data is Map ? results[0].data as Map<String, dynamic> : null;
         final rRaw   = results[1].data;
         _records     = rRaw is List ? rRaw : (rRaw['records'] ?? rRaw['data'] ?? []);
+        AppDate.sortDesc(_records);
         final eRaw   = results[2].data;
         _electricity = eRaw is List ? eRaw : (eRaw['readings'] ?? eRaw['data'] ?? []);
+        AppDate.sortDesc(_electricity, field: 'date');
         _loading     = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -272,8 +275,7 @@ class _ProdCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date     = (record['date'] ?? record['createdAt'] ?? '').toString();
-    final dateStr  = date.length >= 10 ? date.substring(0, 10) : date;
+    final dateStr  = AppDate.format(record['createdAt'] ?? record['date']);
     final user     = record['user']?['fullName'] ?? '--';
     final shift    = record['shift']?['name'] ?? '--';
     final machine  = record['machine']?['name'] ?? '--';
@@ -421,8 +423,7 @@ class _ElecCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date    = (reading['date'] ?? '').toString();
-    final dateStr = date.length >= 10 ? date.substring(0, 10) : date;
+    final dateStr = AppDate.format(reading['date']);
     final shift   = reading['shift']?['name'] ?? '--';
     final by      = reading['recordedBy']?['fullName'] ?? '--';
     final start   = reading['startReading'] ?? 0;

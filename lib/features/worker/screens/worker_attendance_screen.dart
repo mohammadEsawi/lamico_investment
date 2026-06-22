@@ -2,6 +2,7 @@
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -30,6 +31,7 @@ class _WorkerAttendanceScreenState extends State<WorkerAttendanceScreen> {
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['records'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_items, field: 'checkIn');
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -153,7 +155,7 @@ class _WorkerAttendanceScreenState extends State<WorkerAttendanceScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(a['date']?.toString().substring(0, 10) ?? '--',
+                                        Text(AppDate.format(a['checkIn'] ?? a['date']),
                                             style: AppText.h3, textDirection: TextDirection.rtl),
                                         Text('دخول: ${a['checkIn'] ?? '--'}  |  خروج: ${a['checkOut'] ?? '--'}',
                                             style: AppText.caption, textDirection: TextDirection.rtl),

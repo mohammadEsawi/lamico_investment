@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -63,6 +64,7 @@ class _WorkerProductionScreenState extends State<WorkerProductionScreen>
         _shifts   = shifts;
         _machines = machines;
         _records  = records;
+        AppDate.sortDesc(_records);
         _selectedShiftId = autoId ?? (shifts.isNotEmpty ? shifts[0]['id'].toString() : null);
         _loading  = false;
       });
@@ -493,8 +495,7 @@ class _RecordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date    = (record['date'] ?? record['createdAt'] ?? '').toString();
-    final dateStr = date.length >= 10 ? date.substring(0, 10) : date;
+    final dateStr = AppDate.format(record['createdAt'] ?? record['date']);
     final shift   = record['shift']?['name'] ?? '--';
     final total   = record['totalPieces'] ?? 0;
     final cartons = record['cartonsCount'] ?? 0;

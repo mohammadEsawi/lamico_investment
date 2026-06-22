@@ -11,6 +11,8 @@ import '../../../core/widgets/animated_card.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/kpi_card.dart';
 import '../widgets/admin_nav.dart';
+import '../../../core/utils/responsive.dart';
+import '../../../core/widgets/desktop_sidebar.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -39,7 +41,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       bottomNavigationBar: const AdminNav(selectedIndex: 0),
-      body: AiBackground(
+      body: Row(children: [
+        if (Responsive.isDesktop(context)) const DesktopSidebar(role: 'ADMIN'),
+        Expanded(child: AiBackground(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -205,7 +209,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             ),
           ],
         ),
-      ),
+      )),
+    ]),
     );
   }
 

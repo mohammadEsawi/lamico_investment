@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -28,6 +29,7 @@ class _AccountantInvoicesScreenState extends State<AccountantInvoicesScreen> {
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['invoices'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_items);
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -351,8 +353,11 @@ class _AccountantInvoicesScreenState extends State<AccountantInvoicesScreen> {
                                               style: AppText.h3, textDirection: TextDirection.rtl),
                                           Text(inv['customer']?['name'] ?? inv['clientName'] ?? '--',
                                               style: AppText.caption, textDirection: TextDirection.rtl),
-                                          Text(inv['dueDate']?.toString().substring(0, 10) ?? '--',
-                                              style: AppText.label),
+                                          Text('استحقاق: ${AppDate.format(inv['dueDate'])}',
+                                              style: AppText.label, textDirection: TextDirection.rtl),
+                                          Text(AppDate.format(inv['createdAt']),
+                                              style: AppText.label.copyWith(color: AppColors.textSecondary),
+                                              textDirection: TextDirection.rtl),
                                         ],
                                       ),
                                     ),

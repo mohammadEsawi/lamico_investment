@@ -2,6 +2,7 @@
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -28,6 +29,7 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['inspections'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_items);
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -250,8 +252,11 @@ class _EngineerQualityScreenState extends State<EngineerQualityScreen> {
                                             Text(q['title'] ?? q['machine']?['name'] ?? 'فحص جودة',
                                                 style: AppText.h3,
                                                 textDirection: TextDirection.rtl),
-                                            Text(q['notes'] ?? q['date'] ?? '--',
+                                            Text(q['notes'] ?? q['description'] ?? '--',
                                                 style: AppText.caption,
+                                                textDirection: TextDirection.rtl),
+                                            Text(AppDate.format(q['createdAt']),
+                                                style: AppText.label.copyWith(color: AppColors.textSecondary),
                                                 textDirection: TextDirection.rtl),
                                           ],
                                         ),

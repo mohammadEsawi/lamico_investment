@@ -12,6 +12,8 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/kpi_card.dart';
 import '../../../core/widgets/loading_widget.dart';
 import '../widgets/sales_nav.dart';
+import '../../../core/utils/responsive.dart';
+import '../../../core/widgets/desktop_sidebar.dart';
 
 class SalesDashboardScreen extends StatefulWidget {
   const SalesDashboardScreen({super.key});
@@ -70,7 +72,9 @@ class _SalesDashboardScreenState extends State<SalesDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       bottomNavigationBar: const SalesNav(selectedIndex: 0),
-      body: AiBackground(
+      body: Row(children: [
+        if (Responsive.isDesktop(context)) const DesktopSidebar(role: 'SALES_REP'),
+        Expanded(child: AiBackground(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -235,7 +239,8 @@ class _SalesDashboardScreenState extends State<SalesDashboardScreen> {
             ),
           ],
         ),
-      ),
+      )),
+    ]),
     );
   }
 

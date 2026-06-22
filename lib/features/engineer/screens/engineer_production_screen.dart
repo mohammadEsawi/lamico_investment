@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/loading_widget.dart';
@@ -45,6 +46,7 @@ class _EngineerProductionScreenState extends State<EngineerProductionScreen>
       final data = res.data;
       setState(() {
         _records = data is List ? data : (data['records'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_records);
         _loadingRecords = false;
       });
     } catch (_) { setState(() => _loadingRecords = false); }
@@ -89,8 +91,6 @@ class _EngineerProductionScreenState extends State<EngineerProductionScreen>
         separatorBuilder: (_, i2) => const SizedBox(height: 10),
         itemBuilder: (_, i) {
           final r = _records[i];
-          final date = (r['createdAt'] ?? r['date'] ?? '').toString();
-          final dateStr = date.length >= 10 ? date.substring(0, 10) : date;
           final total = r['totalPieces'] ?? r['total'] ?? '--';
           final shift = r['shift']?['name'] ?? '--';
           final machine = r['machine']?['name'] ?? '--';
@@ -116,7 +116,8 @@ class _EngineerProductionScreenState extends State<EngineerProductionScreen>
                           style: AppText.h3, textDirection: TextDirection.rtl),
                       Text('شفت $shift  —  $machine',
                           style: AppText.caption, textDirection: TextDirection.rtl),
-                      Text(dateStr, style: AppText.label.copyWith(color: AppColors.textSecondary),
+                      Text(AppDate.format(r['createdAt'] ?? r['date']),
+                          style: AppText.label.copyWith(color: AppColors.textSecondary),
                           textDirection: TextDirection.rtl),
                     ]),
                   ),

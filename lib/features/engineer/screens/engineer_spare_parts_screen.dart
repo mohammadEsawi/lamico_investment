@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/ai_app_bar.dart';
 import '../../../core/widgets/ai_background.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -28,6 +29,7 @@ class _EngineerSparePartsScreenState extends State<EngineerSparePartsScreen> {
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['parts'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_items);
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -214,6 +216,10 @@ class _EngineerSparePartsScreenState extends State<EngineerSparePartsScreen> {
                                               style: AppText.caption, textDirection: TextDirection.rtl),
                                           if (p['supplier'] != null)
                                             Text('المورد: ${p['supplier']}',
+                                                style: AppText.label.copyWith(color: AppColors.textSecondary),
+                                                textDirection: TextDirection.rtl),
+                                          if (p['createdAt'] != null)
+                                            Text(AppDate.format(p['createdAt']),
                                                 style: AppText.label.copyWith(color: AppColors.textSecondary),
                                                 textDirection: TextDirection.rtl),
                                         ],

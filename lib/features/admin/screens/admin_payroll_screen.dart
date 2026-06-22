@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/services/api_service.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -115,6 +116,7 @@ class _OverviewTabState extends State<_OverviewTab>
         _records = recData is List
             ? recData
             : (recData['payrolls'] ?? recData['data'] ?? []);
+        AppDate.sortDesc(_records, field: 'calculatedAt');
         if (_records.length > 20) _records = _records.sublist(0, 20);
         _loading = false;
       });
@@ -317,6 +319,8 @@ class _PayrollRecordCard extends StatelessWidget {
                   Text(name, style: AppText.h3),
                   const SizedBox(height: 2),
                   Text(month, style: AppText.caption),
+                  Text(AppDate.format(record['calculatedAt'] ?? record['createdAt']),
+                      style: AppText.label.copyWith(color: AppColors.textSecondary)),
                   if (overtime != null && overtime != 0)
                     Text('أوفرتايم: $overtime ساعة',
                         style:
@@ -373,6 +377,7 @@ class _DailyPayrollTabState extends State<_DailyPayrollTab>
       final data = res.data;
       setState(() {
         _items = data is List ? data : (data['dailyPayrolls'] ?? data['data'] ?? []);
+        AppDate.sortDesc(_items, field: 'date');
         _loading = false;
       });
     } catch (_) {
@@ -546,7 +551,6 @@ class _DailyEntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = entry['user']?['name'] ?? entry['employeeName'] ?? '--';
-    final date = entry['date'] ?? '--';
     final hours = entry['hoursWorked'] ?? entry['hours'] ?? '--';
     final dailyRate = entry['dailyRate'] ?? entry['rate'] ?? '--';
     final total = entry['totalPay'] ?? entry['total'] ?? entry['amount'] ?? '--';
@@ -577,7 +581,8 @@ class _DailyEntryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(name, style: AppText.h3),
-                      Text(date, style: AppText.caption),
+                      Text(AppDate.format(entry['date']),
+                          style: AppText.caption),
                     ],
                   ),
                 ),

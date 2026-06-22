@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart' hide TextDirection;
 import '../../../core/services/api_service.dart';
+import '../../../core/utils/date_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/widgets/ai_app_bar.dart';
@@ -36,8 +36,6 @@ class _EngineerSparePartRequestsScreenState
   File? _photo;
   bool _submitting = false;
 
-  final _dateFmt = DateFormat('dd/MM/yyyy');
-
   static const _statuses = ['ALL', 'PENDING', 'APPROVED', 'REJECTED', 'ORDERED', 'RECEIVED'];
 
   @override
@@ -67,6 +65,7 @@ class _EngineerSparePartRequestsScreenState
       final d1 = results[1].data;
       setState(() {
         _requests = d0 is List ? d0 : (d0['requests'] ?? d0['data'] ?? []);
+        AppDate.sortDesc(_requests);
         _machines = d1 is List ? d1 : (d1['machines'] ?? d1['data'] ?? []);
         _loading = false;
       });
@@ -334,9 +333,7 @@ class _EngineerSparePartRequestsScreenState
                                 textDirection: TextDirection.rtl,
                               ),
                               Text(
-                                _dateFmt.format(DateTime.tryParse(
-                                        r['createdAt']?.toString() ?? '') ??
-                                    DateTime.now()),
+                                AppDate.format(r['createdAt']),
                                 style: AppText.caption,
                                 textDirection: TextDirection.rtl,
                               ),
