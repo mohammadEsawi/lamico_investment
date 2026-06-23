@@ -19,7 +19,7 @@ class WorkerNav extends StatelessWidget {
           case 0: context.go('/worker'); break;
           case 1: context.go('/worker/production'); break;
           case 2: context.go('/worker/attendance'); break;
-          case 3: context.go('/worker/tools'); break;
+          case 3: context.go('/worker/daily-inventory'); break;
         }
       },
       destinations: const [
@@ -39,9 +39,9 @@ class WorkerNav extends StatelessWidget {
           label: 'الحضور',
         ),
         NavigationDestination(
-          icon: Icon(Icons.handyman_outlined),
-          selectedIcon: Icon(Icons.handyman, color: Colors.white),
-          label: 'أدوات',
+          icon: Icon(Icons.fact_check_outlined),
+          selectedIcon: Icon(Icons.fact_check, color: Colors.white),
+          label: 'الجرد اليومي',
         ),
       ],
     );
@@ -66,6 +66,7 @@ class WorkerMoreMenu extends StatelessWidget {
       },
       itemBuilder: (_) => [
         _item('/worker/payroll', 'راتبي', Icons.payments_outlined, AppColors.neonGreen),
+        _item('/worker/tools', 'أدوات', Icons.handyman_outlined, AppColors.neonOrange),
         _item('/inventory', 'المخزن', Icons.inventory_2_outlined, AppColors.neonCyan),
         _item('/chat', 'الدردشة', Icons.chat_bubble_outline, AppColors.neonCyan),
         _item('/profile', 'الملف الشخصي', Icons.person_outline, AppColors.textSecondary),

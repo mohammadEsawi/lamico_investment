@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, Tar
 
 class ApiConfig {
   // Android emulator reaches host via 10.0.2.2; real device uses LAN IP.
-  static const String _mobileIp = '10.0.2.2';
+  static const String _mobileIp = '172.20.10.2';
 
   static String get serverIp {
     if (kIsWeb) return 'localhost';

@@ -65,6 +65,7 @@ import '../../features/sales_rep/screens/sales_visits_screen.dart';
 import '../../features/sales_rep/screens/sales_targets_screen.dart';
 import '../../features/sales_rep/screens/sales_sales_screen.dart';
 import '../../features/worker/screens/worker_payroll_screen.dart';
+import '../../features/worker/screens/worker_daily_inventory_screen.dart';
 import '../../features/shared/screens/inventory_screen.dart';
 import '../../features/admin/screens/admin_bank_reconciliation_screen.dart';
 import '../../features/admin/screens/admin_tax_filings_screen.dart';
@@ -180,7 +181,8 @@ final appRouter = GoRouter(
     GoRoute(path: '/worker/attendance',  builder: (c, s) => const WorkerAttendanceScreen()),
     GoRoute(path: '/worker/tools',       builder: (c, s) => const WorkerToolsScreen()),
     GoRoute(path: '/worker/electricity', builder: (c, s) => const WorkerElectricityScreen()),
-    GoRoute(path: '/worker/payroll',     builder: (c, s) => const WorkerPayrollScreen()),
+    GoRoute(path: '/worker/payroll',          builder: (c, s) => const WorkerPayrollScreen()),
+    GoRoute(path: '/worker/daily-inventory',  builder: (c, s) => const WorkerDailyInventoryScreen()),
     // Shared
     GoRoute(path: '/inventory',        builder: (c, s) => const InventoryScreen()),
     // Sales Rep
